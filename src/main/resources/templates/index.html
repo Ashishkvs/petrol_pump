@@ -11,7 +11,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="jquery.validate.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <title>Hello, world!</title>
+    <title>Petrol Pump Application</title>
 	<style>
 		.error{
 		margin-left5px;
@@ -23,10 +23,13 @@
 	</style>
   </head>
   <body>
-   
+   <div>
+	   <li><a href="/ui/">Totalizer form</a></li>
+	   <li><a href="/ui/graph">Graph Viewer</a></li>
+   </div>
   <div class="container">
-    <h1 class="display-4">Fluid jumbotron</h1>
-    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+    <h1 class="display-4">Daily Totalizer updater</h1>
+    <p class="lead">Use Below form to track every days selling units</p>
 	
 	<hr>
 	
@@ -40,7 +43,7 @@
   </label>
 </div>
  <!-- radio button -->
-	<form id="myForm">
+	<form id="myForm" action="#" th:action="@{/ui/saveRecords}" th:object="${totalizer}" method="post">
   <div class="form-row">
 
     <div class="col" id="volumeDiv">
@@ -49,15 +52,20 @@
     </div>
 	
 	 <div class="col" id="totalizerDiv" hidden>
-      <input type="text" class="form-control" id="totalizerStartVolume" placeholder="totalizerStartVolume" >
-	   <input type="text" class="form-control" id="totalizerStartAmount" placeholder="totalizerStartAmount" >
+	 <label>totalizerStartVolume</label>
+      <input type="text" class="form-control" id="totalizerStartVolume" placeholder="totalizerStartVolume" th:field="*{dayStartVolume}">
+	    <label>totalizerStartAmount</label>
+	   <input type="text" class="form-control" id="totalizerStartAmount" placeholder="totalizerStartAmount"th:field="*{dayStartAmount}" >
 	   <hr>
-	  <input type="text" class="form-control" id="totalizerEndVolume" placeholder="totalizerEndVolume" >
-	  <input type="text" class="form-control" id="totalizerEndAmount" placeholder="totalizerEndAmount" >
+	    <label>totalizerEndVolume</label>
+	  <input type="text" class="form-control" id="totalizerEndVolume" placeholder="totalizerEndVolume" th:field="*{dayEndVolume}">
+	  <label>totalizerEndAmount</label>
+	  <input type="text" class="form-control" id="totalizerEndAmount" placeholder="totalizerEndAmount" th:field="*{dayEndAmount}">
     </div>
 	
     <div class="col">
-      <input type="date" class="form-control" id="date" placeholder="Date" required>
+    <label>Date</label>
+      <input type="date" class="form-control" id="date" placeholder="Date" th:field="*{createdDate}" required>
     </div>
   </div>
   <div class="text-center">
@@ -70,7 +78,7 @@ $(document).ready(function () {
 //displayChart();
 
  $('#myForm').submit(function(e) {
-    e.preventDefault();
+   // e.preventDefault();
 	 let tdate = $('#date').val();
 	 
 	let tvol = $('#volume').val(); 
@@ -121,13 +129,13 @@ $(document).ready(function () {
 	}
 		console.log('Form submitted ' + tvol + ''+tdate);
 	});
-	
-	
+
 	//radio functionality
 	//$('#myForm input').on('change', function() {
    //alert($('input[name=options]:checked', '#myForm').val()); 
 	//});
-    
+ //$('#myForm').submit();
+ //e.preventDefault(false);
 });
 
 	function fieldEnable(){
@@ -142,77 +150,6 @@ $(document).ready(function () {
 	}
 </script>
 
-
-<div>
-<select id="selectedMonth" onchange="getSelectedMonth()">
-    <option value="1">January</option>
-    <option value="2">Feburary</option>
-    <option value="3">March</option>
-    <option value="4">April</option>
-    <option value="5">May</option>
-    <option value="6">June</option>
-    <option value="7">July</option>
-    <option value="8">August</option>
-    <option value="9">September</option>
-    <option value="10">October</option>
-    <option value="11">November</option>
-    <option value="12">December</option>
-</select>
-
-<canvas id="myChart"></canvas>
-</div>
-
-<script>
-
-function getListOfDays(monthNumber){
-var listOfDays = [];
-for(i=1;i<=daysInThisMonth(monthNumber) ;i++){
-	listOfDays.push(i);
-}
-console.log(listOfDays);
-return listOfDays;
-}
-
-function getSelectedMonth(){
-var selectedMonth = $( "#selectedMonth" ).val();
-let monthsData = [300,500,1000,700,1200,567,987,100];
-displayChart(getListOfDays(selectedMonth),monthsData);
-console.log(selectedMonth)
-}
-
-function displayChart(daysLabels , monthsAllData){
-
-new Chart(document.getElementById("myChart"), {
-    type: 'bar',
-    data: {
-      labels: daysLabels,
-      datasets: [
-        {
-          label: "Population (millions)",
-          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-          data: monthsAllData
-        }
-      ]
-    },
-    options: {
-      legend: { display: false },
-      title: {
-        display: true,
-        text: 'Predicted world population (millions) in 2050'
-      }
-    }
-});
-}
-
-
-function daysInThisMonth(monthNumber) {
-  var now = new Date();
-  //current month
-  //return new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
-  return new Date(now.getFullYear(), monthNumber, 0).getDate();
-}
-</script>
-  </div>
 
 
     <!-- Optional JavaScript -->

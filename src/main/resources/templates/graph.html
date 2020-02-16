@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Petrol Pump</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <title>Petrol Diesel Graph Viewer !</title>
+	<style>
+		.error{
+		margin-left5px;
+			color:red;
+		}
+		.form-control{
+			margin:5px;
+		}
+	</style>
+		
+
+<script>
+$(document).ready(function () {
+});
+</script>
+  </head>
+  <body>
+   <div>
+	   <li><a href="/ui/">Totalizer form</a></li>
+	   <li><a href="/ui/graph">Graph Viewer</a></li>
+   </div>
+  <div class="container">
+    <h1 class="display-4">Petrol Pump Totalizer Graph</h1>
+    <p class="lead">Oil Monthly Consumptions</p>
+	<hr>
+
+
+
+<select id="selectedMonth" onchange="getSelectedMonth()">
+    <option value="1">January</option>
+    <option value="2">Feburary</option>
+    <option value="3">March</option>
+    <option value="4">April</option>
+    <option value="5">May</option>
+    <option value="6">June</option>
+    <option value="7">July</option>
+    <option value="8">August</option>
+    <option value="9">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+</select>
+
+<canvas id="myChart"></canvas>
+<script type="text/javascript" th:inline="javascript">
+var graphData = /*[[${graphDatas}]]*/;
+console.log(graphData);
+</script>
+<script>
+
+function getListOfDays(monthNumber){
+var listOfDays = [];
+for(i=1;i<=daysInThisMonth(monthNumber) ;i++){
+	listOfDays.push(i);
+}
+console.log(listOfDays);
+return listOfDays;
+}
+
+function getSelectedMonth(){
+var selectedMonth = $( "#selectedMonth" ).val();
+let monthsData = graphData.map(function (graph){ return graph.dayVolume;});
+displayChart(getListOfDays(selectedMonth),monthsData);
+console.log(selectedMonth)
+}
+
+function displayChart(daysLabels , monthsAllData){
+
+new Chart(document.getElementById("myChart"), {
+    type: 'bar',
+    data: {
+      labels: daysLabels,
+      datasets: [
+        {
+          label: "Liters",
+          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+          data: monthsAllData
+        }
+      ]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Oil Selling unit in 2020'
+      }
+    }
+});
+}
+
+
+function daysInThisMonth(monthNumber) {
+  var now = new Date();
+  //current month
+  //return new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  return new Date(now.getFullYear(), monthNumber, 0).getDate();
+}
+</script>
+  </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>

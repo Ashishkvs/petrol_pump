@@ -6,8 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Pattern;
 
-import org.springframework.data.annotation.CreatedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class Totalizer {
 	private double dayEndVolume;
 	private double dayEndAmount;
 
-	@CreatedDate
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createdDate;
 
 }
