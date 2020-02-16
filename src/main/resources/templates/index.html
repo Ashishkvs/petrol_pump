@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Petrol Pump</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <title>Hello, world!</title>
+	<style>
+		.error{
+		margin-left5px;
+			color:red;
+		}
+		.form-control{
+			margin:5px;
+		}
+	</style>
+  </head>
+  <body>
+   
+  <div class="container">
+    <h1 class="display-4">Fluid jumbotron</h1>
+    <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+	
+	<hr>
+	
+	  
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-secondary active">
+    <input type="radio" name="options" id="totalizer"  onchange="fieldEnable()"> Totalizer
+  </label>
+  <label class="btn btn-secondary">
+    <input type="radio" name="options" id="volPerDay" checked onchange="fieldEnable()"> VolPerDay
+  </label>
+</div>
+ <!-- radio button -->
+	<form id="myForm">
+  <div class="form-row">
+
+    <div class="col" id="volumeDiv">
+      <input type="text" class="form-control" id="volume" placeholder="volume" >
+	  <input type="text" class="form-control" id="amount" placeholder="Amount" >
+    </div>
+	
+	 <div class="col" id="totalizerDiv" hidden>
+      <input type="text" class="form-control" id="totalizerStartVolume" placeholder="totalizerStartVolume" >
+	   <input type="text" class="form-control" id="totalizerStartAmount" placeholder="totalizerStartAmount" >
+	   <hr>
+	  <input type="text" class="form-control" id="totalizerEndVolume" placeholder="totalizerEndVolume" >
+	  <input type="text" class="form-control" id="totalizerEndAmount" placeholder="totalizerEndAmount" >
+    </div>
+	
+    <div class="col">
+      <input type="date" class="form-control" id="date" placeholder="Date" required>
+    </div>
+  </div>
+  <div class="text-center">
+  <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+
+<script>
+$(document).ready(function () {
+//displayChart();
+
+ $('#myForm').submit(function(e) {
+    e.preventDefault();
+	 let tdate = $('#date').val();
+	 
+	let tvol = $('#volume').val(); 
+	let tamount = $('#amount').val();
+	
+	//totalizer properties
+	let tsv = $ ('#totalizerStartVolume').val();
+	let tsa = $ ('#totalizerStartAmount').val();
+	let tev = $ ('#totalizerEndVolume').val();
+	let tea = $ ('#totalizerEndAmount').val();
+		
+	$(".error").remove();
+	//condition checked must be fater this statement
+	
+	if(tsv == '' || isNaN(tsv) || tsv <= 0){
+		$('#totalizerStartVolume').after('<span class="error"> *Invalid Volume passed</span>');
+	}
+	if(tev == '' || isNaN(tev) || tev <= 0){
+		$('#totalizerEndVolume').after('<span class="error"> *Invalid Volume passed</span>');
+	}
+	
+	if(tsa == '' || isNaN(tsa) || tsa <= 0){
+		$('#totalizerStartAmount').after('<span class="error"> *Invalid Amount passed</span>');
+	}
+	if(tea == '' || isNaN(tea) || tea <= 0){
+		$('#totalizerEndAmount').after('<span class="error"> *Invalid Amount passed</span>');
+	}
+	
+	//bussiness logic
+	//volume
+	if(tsv > tev){
+		$('#totalizerEndVolume').after('<span class="error"> *Totalizer end Volume must be <b> > </b> Totalizer Start Volume</span>');
+	}
+	//amount
+	if(tsa > tea){
+		$('#totalizerEndAmount').after('<span class="error"> *Totalizer end Amount must be <b> > </b> Totalizer Start Amount</span>');
+	}
+	
+	
+	if(tvol == '' || isNaN(tvol) || tvol <= 0){
+		$('#volume').after('<span class="error"> *Invalid Volume passed</span>');
+	}
+	if(tamount == '' || isNaN(tamount) || tamount <= 0){
+		$('#amount').after('<span class="error"> *Invalid Amount passed</span>');
+	}
+	if(tdate == ''){
+		$('#date').after('<span class="error">Invalid data passed</span>');
+	}
+		console.log('Form submitted ' + tvol + ''+tdate);
+	});
+	
+	
+	//radio functionality
+	//$('#myForm input').on('change', function() {
+   //alert($('input[name=options]:checked', '#myForm').val()); 
+	//});
+    
+});
+
+	function fieldEnable(){
+	if (document.getElementById('totalizer').checked) {
+		document.getElementById('totalizerDiv').hidden = false;
+		document.getElementById('volumeDiv').hidden = true;
+	}else{
+		document.getElementById('totalizerDiv').hidden = true;
+		document.getElementById('volumeDiv').hidden = false;
+	}
+	
+	}
+</script>
+
+
+<div>
+<select id="selectedMonth" onchange="getSelectedMonth()">
+    <option value="1">January</option>
+    <option value="2">Feburary</option>
+    <option value="3">March</option>
+    <option value="4">April</option>
+    <option value="5">May</option>
+    <option value="6">June</option>
+    <option value="7">July</option>
+    <option value="8">August</option>
+    <option value="9">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+</select>
+
+<canvas id="myChart"></canvas>
+</div>
+
+<script>
+
+function getListOfDays(monthNumber){
+var listOfDays = [];
+for(i=1;i<=daysInThisMonth(monthNumber) ;i++){
+	listOfDays.push(i);
+}
+console.log(listOfDays);
+return listOfDays;
+}
+
+function getSelectedMonth(){
+var selectedMonth = $( "#selectedMonth" ).val();
+let monthsData = [300,500,1000,700,1200,567,987,100];
+displayChart(getListOfDays(selectedMonth),monthsData);
+console.log(selectedMonth)
+}
+
+function displayChart(daysLabels , monthsAllData){
+
+new Chart(document.getElementById("myChart"), {
+    type: 'bar',
+    data: {
+      labels: daysLabels,
+      datasets: [
+        {
+          label: "Population (millions)",
+          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+          data: monthsAllData
+        }
+      ]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Predicted world population (millions) in 2050'
+      }
+    }
+});
+}
+
+
+function daysInThisMonth(monthNumber) {
+  var now = new Date();
+  //current month
+  //return new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  return new Date(now.getFullYear(), monthNumber, 0).getDate();
+}
+</script>
+  </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>
