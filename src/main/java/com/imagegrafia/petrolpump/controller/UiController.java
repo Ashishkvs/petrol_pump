@@ -37,12 +37,16 @@ public class UiController {
 			Model model) {
 //		Totalizer totalizer = new Totalizer(1, 10.0, 500.5, 100.0, 5000.0, new Date());
 		model.addAttribute("totalizer", new Totalizer(0, 0.0, 0.0, 0.0, 0.0, new Date()));
+		model.addAttribute("prevDayVolume", "");
+		model.addAttribute("prevDayAmount", "");
+		totalizerService.getPreviousDayTotalizer();
 		return "index";
 	}
 
 	@PostMapping("/saveRecords")
 	public String saveRecord(@ModelAttribute Totalizer totalizer, BindingResult bindingResult,
 			HttpServletResponse response, Model model) {
+		totalizerService.validateNewData(totalizer);
 		log.info("Totalizer :: {} ", totalizer);
 		totalizerService.saveTotalizer(totalizer);
 		return "index";
