@@ -1,8 +1,6 @@
 package com.imagegrafia.petrolpump.controller;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -16,20 +14,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.imagegrafia.petrolpump.entity.GraphData;
 import com.imagegrafia.petrolpump.entity.Totalizer;
 import com.imagegrafia.petrolpump.service.TotalizerService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+ * @author ashish
+ *
+ */
 @Controller
 @RequestMapping("/ui")
 @Slf4j
 public class UiController {
+
 	@Autowired
 	private TotalizerService totalizerService;
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.imagegrafia.petrolpump.entity.Totalizer;
@@ -45,5 +46,11 @@ public class TotalizerController {
 	private HttpHeaders getHeaders() {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		return httpHeaders;
+	}
+
+	// disabled [NumberFormatException: For input string: "favicon.ico"]]
+	@GetMapping("favicon.ico")
+	@ResponseBody
+	void returnNoFavicon() {
 	}
 }
