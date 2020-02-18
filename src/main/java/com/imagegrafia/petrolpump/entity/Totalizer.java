@@ -1,5 +1,6 @@
 package com.imagegrafia.petrolpump.entity;
 
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Totalizer {
+public class Totalizer{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
@@ -29,5 +30,15 @@ public class Totalizer {
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createdDate;
+
+//	@Override
+//	public int compare(Totalizer o1, Totalizer o2) {
+//		if (o1.getCreatedDate().compareTo(o2.getCreatedDate()) > 0)
+//			return 1;
+//		else if (o1.getCreatedDate().compareTo(o2.getCreatedDate()) < 0)
+//			return -1;
+//		else
+//			return 0;
+//	}
 
 }
