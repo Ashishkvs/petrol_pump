@@ -30,23 +30,27 @@
 	   <li><a href="/ui/dashboard">Dashboard</a></li>
    </div>
 <div class="container">
+	<div th:if="${enableMessage}">
+		<div class="alert alert-success" role="alert" >
+	  		<p th:text="${message}">Success message</p>
+		</div>
+	</div>
     <h1 class="display-4">Dashboard</h1>
     <p class="lead">Use Below form to track every days selling units</p>
 	<div class="col-8">
 		<div class="mx-2 mb-2">
 			<span class="display-6 text-uppercase" th:text="${pumpName}">Ashish Bio Fuels</span>
-			<button class="btn btn-primary float-right" data-toggle="collapse" data-target="#addNozzle">+Add Nozzle</button>
+			<button class="btn btn-primary float-right" data-toggle="collapse" data-target="#nozzleForm">+Add Nozzle</button>
 		</div>
 	</div>
 	<div class="col-6 mx-2 mt-2">
-<!-- 	<form id="myForm" action="#" th:action="@{/ui/saveRecords}" th:object="${totalizer}" method="post"> -->
   
-		<form class="form-inline jumbotron collapse" id="addNozzle" th>
+		<form class="form-inline jumbotron collapse" id="nozzleForm" action="#" th:action="@{/ui/nozzleRecord}" th:object="${nozzle}" method="post">
 			  
-			  <input type="text" class="form-control mb-2 mr-sm-2" id="nozzleName" placeholder="Nozzle Name" required>
+			  <input type="text" class="form-control mb-2 mr-sm-2" id="nozzleName" placeholder="Nozzle Name" required th:field="*{name}">
 			  <label class="sr-only" for="oilType">Oil Type</label>
 			  <div class="input-group mb-2 mr-sm-2">
-			   <select class="custom-select my-1 mr-sm-2" id="oilType" required>
+			   <select class="custom-select my-1 mr-sm-2" id="oilType" required th:field="*{type}">
 			    <option selected value="">Oil Type...</option>
 			    <option value="DIESEL">DIESEL</option>
 			    <option value="PETROL">PETROL</option>

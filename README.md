@@ -11,3 +11,6 @@ https://www.thymeleaf.org/doc/articles/springsecurity.html
 
 #favicon error
 https://www.baeldung.com/spring-boot-favicon
+
+@ToString(exclude = "nozzles")
+#PersistentBag.toString() stackoverflow error while querying the

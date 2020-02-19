@@ -16,7 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.imagegrafia.petrolpump.entity.GraphData;
+import com.imagegrafia.petrolpump.entity.Nozzle;
+import com.imagegrafia.petrolpump.entity.Pump;
 import com.imagegrafia.petrolpump.entity.Totalizer;
+import com.imagegrafia.petrolpump.service.NozzleService;
+import com.imagegrafia.petrolpump.service.PumpService;
 import com.imagegrafia.petrolpump.service.TotalizerService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +37,10 @@ public class UiController {
 
 	@Autowired
 	private TotalizerService totalizerService;
+	
+	@Autowired
+	private NozzleService nozzleService;
+	private boolean enableMessage;
 
 	@GetMapping("/")
 	public String index(Model model) {
@@ -78,10 +86,26 @@ public class UiController {
 	}
 
 	// dashboard
+	@Autowired
+	PumpService pumpService;
 	@GetMapping("/dashboard")
 	public String dashboard(Model model) {
-		model.addAttribute("pumpName", "Ashish Bio-Fuels");
-		model.addAttribute("listOfNozzles", new String[] {"Petrol1","Diesel1","Diesel2","Petrol2",});
+		pumpService.saveNozzle(new Pump(1,"Ashish","biofuels",null));
+		intializeDashboard(model);
+		return "dashboard";
+	}
+
+	@PostMapping("/nozzleRecord")
+	public String saveNozzle(@ModelAttribute Nozzle nozzle, Model model) {
+		intializeDashboard(model);
+		// enable success or failed message
+		this.enableMessage = true;
+		model.addAttribute("message", nozzle.getName().toUpperCase() + " saved successfully");
+		log.info("Nozzle : {}", nozzle);
+		if (nozzle != null) {
+			nozzleService.saveNozzle(nozzle, 1);
+		}
+		log.info("AllNozzle:::::: : {}", nozzleService.findAllNozzleByPumpId(1));
 		return "dashboard";
 	}
 
@@ -97,6 +121,14 @@ public class UiController {
 		}
 		log.info("graphDatas ::  {}", graphDatas);
 		return graphDatas;
+	}
+
+	// to make view constant for all http request
+	private void intializeDashboard(Model model) {
+		model.addAttribute("pumpName", "Ashish Bio-Fuels");
+		model.addAttribute("listOfNozzles", new String[] { "Petrol1", "Diesel1", "Diesel2", "Petrol2", });
+		model.addAttribute("nozzle", new Nozzle());
+		model.addAttribute("enableMessage", enableMessage);
 	}
 
 }

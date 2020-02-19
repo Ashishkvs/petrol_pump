@@ -1,5 +1,8 @@
 package com.imagegrafia.petrolpump.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,24 +16,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Data
+@ToString(exclude = "nozzles")
 @Entity
 public class Pump {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@NotNull
-	@NotBlank(message="pump name cannot be null or empty")
+	@NotBlank(message = "pump name cannot be null or empty")
 	private String name;
-	
-	@NotBlank(message="pump address cannot be null or empty")
+
+	@NotBlank(message = "pump address cannot be null or empty")
 	private String address;
-	
-	@OneToMany
-	private Nozzle nozzles;
+
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "pump")
+	private List<Nozzle> nozzles;
 }
