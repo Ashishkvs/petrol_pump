@@ -77,6 +77,14 @@ public class UiController {
 		return "tableView";
 	}
 
+	// dashboard
+	@GetMapping("/dashboard")
+	public String dashboard(Model model) {
+		model.addAttribute("pumpName", "Ashish Bio-Fuels");
+		model.addAttribute("listOfNozzles", new String[] {"Petrol1","Diesel1","Diesel2","Petrol2",});
+		return "dashboard";
+	}
+
 	private List<GraphData> getGraphData(List<Totalizer> totalizers) {
 		List<GraphData> graphDatas = new ArrayList<>();
 		int i = 1;
