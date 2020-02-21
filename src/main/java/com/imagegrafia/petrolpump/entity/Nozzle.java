@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@ToString(exclude = "pump")
+@ToString(exclude = {"pump","totalizer"})
 @Entity
 public class Nozzle {
 	@Id
@@ -33,7 +33,7 @@ public class Nozzle {
 	private String type;
 	
 	@NotNull(message="pump cannot be null")
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "PUMP_ID")
 	private Pump pump;
 	

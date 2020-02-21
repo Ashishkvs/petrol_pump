@@ -19,7 +19,7 @@ import com.imagegrafia.petrolpump.entity.Totalizer;
 import com.imagegrafia.petrolpump.service.TotalizerService;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class TotalizerController {
 	@Autowired
 	private TotalizerService totalizerService;

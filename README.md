@@ -19,3 +19,11 @@ https://www.baeldung.com/spring-boot-favicon
  str.equals("Ashish") ? "ASHISH" : false
  
  <expression> ? <if true> : <if false>
+ 
+ #forward url without changing browser url
+ @GetMapping("/login/{id}")
+	public ModelAndView uiLogin(@PathVariable("id")Long pumpId,ModelMap modelMap) {
+		Optional<Pump> pumpById = pumpRepository.findById(pumpId);
+		modelMap.addAttribute("pumpById", pumpById);
+		return new ModelAndView("forward:/ui/dashboard", modelMap);
+	}

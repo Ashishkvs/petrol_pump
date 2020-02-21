@@ -31,8 +31,9 @@ public class NozzleService {
 	public List<Nozzle> findAllNozzle() {
 		return (List<Nozzle>) nozzleRepository.findAll();
 	}
+
 	public List<Nozzle> findAllNozzleByPumpId(Long pumpId) {
-		Pump pump=new Pump();
+		Pump pump = new Pump();
 		pump.setId(pumpId);
 		return (List<Nozzle>) nozzleRepository.findByPump(pump);
 	}
@@ -41,10 +42,13 @@ public class NozzleService {
 		return nozzleRepository.findById(totalizerId).get();
 	}
 
-	public Nozzle saveNozzle(Nozzle nozzle ,Long pumpId) {
-		Optional<Pump> findById = pumpRepository.findById(pumpId);
-		nozzle.setPump(findById.get());
-		log.info(NOZZLE_SERVICE+" {}" ,findById.get());
+	public Nozzle saveNozzle(Nozzle nozzle, Pump pump) {
+//		Optional<Pump> findById = pumpRepository.findById(pump.g);
+		if (nozzle == null || pump == null) {
+			throw new InvalidDataException( "Nozzle :"+nozzle+"Pump : "+pump); 
+		}
+			nozzle.setPump(pump);
+		log.info(NOZZLE_SERVICE + " {}", nozzle);
 		return nozzleRepository.save(nozzle);
 	}
 
