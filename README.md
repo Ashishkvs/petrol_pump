@@ -27,3 +27,6 @@ https://www.baeldung.com/spring-boot-favicon
 		modelMap.addAttribute("pumpById", pumpById);
 		return new ModelAndView("forward:/ui/dashboard", modelMap);
 	}
+	
+#detached entity issue
+https://stackoverflow.com/questions/27672337/detached-entity-passed-to-persist-when-save-the-child-data
