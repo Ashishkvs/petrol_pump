@@ -39,7 +39,7 @@
     <p class="lead">Use Below form to track every days selling units</p>
 	<div class="col-8">
 		<div class="mx-2 mb-2">
-			<span class="display-6 text-uppercase" th:text="${pumpName}">Ashish Bio Fuels</span>
+			<span class="display-6 text-uppercase" th:text="${pump.name}">Ashish Bio Fuels</span>
 			<button class="btn btn-primary float-right" data-toggle="collapse" data-target="#nozzleForm">+Add Nozzle</button>
 		</div>
 	</div>
@@ -63,12 +63,13 @@
 		<div class="clearfix"></div>
 	<div class="col-6">
 		<div class="mx-2 mt-2">
-		<ul class="list-group" th:each="nozzelName : ${listOfNozzles}">
-		  <li class="list-group-item" th:text="${nozzelName}">Nozzle Name</li>
+		<ul class="list-group" th:each="nozzle : ${nozzles}">
+		  <li class="list-group-item" th:text="${nozzle.name}">Nozzle Name</li>
 		</ul>
 		</div>
 	</div>
 	
+
 	
 <!--  temporary  temporary-->
 <!-- <form class="needs-validation" novalidate>

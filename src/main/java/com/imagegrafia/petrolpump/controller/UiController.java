@@ -19,6 +19,8 @@ import com.imagegrafia.petrolpump.entity.GraphData;
 import com.imagegrafia.petrolpump.entity.Nozzle;
 import com.imagegrafia.petrolpump.entity.Pump;
 import com.imagegrafia.petrolpump.entity.Totalizer;
+import com.imagegrafia.petrolpump.repository.NozzleRepository;
+import com.imagegrafia.petrolpump.repository.PumpRepository;
 import com.imagegrafia.petrolpump.service.NozzleService;
 import com.imagegrafia.petrolpump.service.PumpService;
 import com.imagegrafia.petrolpump.service.TotalizerService;
@@ -37,15 +39,20 @@ public class UiController {
 
 	@Autowired
 	private TotalizerService totalizerService;
-	
+
+	@Autowired
+	PumpRepository pumpRepository;
+
+	@Autowired
+	NozzleRepository nozzleRepository;
+
 	@Autowired
 	private NozzleService nozzleService;
 	private boolean enableMessage;
 
 	@GetMapping("/")
 	public String index(Model model) {
-//		Totalizer totalizer = new Totalizer(1, 10.0, 500.5, 100.0, 5000.0, new Date());
-		model.addAttribute("totalizer", new Totalizer(0, 0.0, 0.0, 0.0, 0.0, new Date()));
+		model.addAttribute("totalizer", new Totalizer());
 		model.addAttribute("prevDayVolume", "");
 		model.addAttribute("prevDayAmount", "");
 //		totalizerService.getPreviousDayTotalizer();
@@ -88,9 +95,9 @@ public class UiController {
 	// dashboard
 	@Autowired
 	PumpService pumpService;
+
 	@GetMapping("/dashboard")
 	public String dashboard(Model model) {
-		pumpService.saveNozzle(new Pump(1,"Ashish","biofuels",null));
 		intializeDashboard(model);
 		return "dashboard";
 	}
@@ -103,9 +110,9 @@ public class UiController {
 		model.addAttribute("message", nozzle.getName().toUpperCase() + " saved successfully");
 		log.info("Nozzle : {}", nozzle);
 		if (nozzle != null) {
-			nozzleService.saveNozzle(nozzle, 1);
+			nozzleService.saveNozzle(nozzle, 1L);
 		}
-		log.info("AllNozzle:::::: : {}", nozzleService.findAllNozzleByPumpId(1));
+		log.info("AllNozzle:::::: : {}", nozzleService.findAllNozzleByPumpId(1L));
 		return "dashboard";
 	}
 
@@ -125,9 +132,14 @@ public class UiController {
 
 	// to make view constant for all http request
 	private void intializeDashboard(Model model) {
-		model.addAttribute("pumpName", "Ashish Bio-Fuels");
-		model.addAttribute("listOfNozzles", new String[] { "Petrol1", "Diesel1", "Diesel2", "Petrol2", });
+		List<Pump> pumps = (List<Pump>) pumpRepository.findAll();
+		model.addAttribute("pump", pumps.get(0));
+
+		List<Nozzle> nozzles = (List<Nozzle>) nozzleRepository.findByPump(pumps.get(0));
+		model.addAttribute("nozzles", nozzles);
+		// for empty form
 		model.addAttribute("nozzle", new Nozzle());
+
 		model.addAttribute("enableMessage", enableMessage);
 	}
 

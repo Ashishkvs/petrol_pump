@@ -1,5 +1,7 @@
 package com.imagegrafia.petrolpump.entity;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -16,8 +19,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString(exclude = "pump")
 @Entity
 public class Nozzle {
@@ -35,4 +36,7 @@ public class Nozzle {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "PUMP_ID")
 	private Pump pump;
+	
+	@OneToMany(mappedBy="nozzle")
+	private List<Totalizer> totalizer;
 }

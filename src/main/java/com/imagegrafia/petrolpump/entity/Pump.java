@@ -11,13 +11,9 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @ToString(exclude = "nozzles")
 @Entity
@@ -25,7 +21,7 @@ public class Pump {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 	@NotNull
 	@NotBlank(message = "pump name cannot be null or empty")
 	private String name;

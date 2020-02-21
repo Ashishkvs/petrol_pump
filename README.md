@@ -14,3 +14,8 @@ https://www.baeldung.com/spring-boot-favicon
 
 @ToString(exclude = "nozzles")
 #PersistentBag.toString() stackoverflow error while querying the
+
+#TERNARy operator 
+ str.equals("Ashish") ? "ASHISH" : false
+ 
+ <expression> ? <if true> : <if false>

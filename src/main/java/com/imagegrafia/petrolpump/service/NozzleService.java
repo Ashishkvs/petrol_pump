@@ -31,7 +31,7 @@ public class NozzleService {
 	public List<Nozzle> findAllNozzle() {
 		return (List<Nozzle>) nozzleRepository.findAll();
 	}
-	public List<Nozzle> findAllNozzleByPumpId(int pumpId) {
+	public List<Nozzle> findAllNozzleByPumpId(Long pumpId) {
 		Pump pump=new Pump();
 		pump.setId(pumpId);
 		return (List<Nozzle>) nozzleRepository.findByPump(pump);
@@ -41,7 +41,7 @@ public class NozzleService {
 		return nozzleRepository.findById(totalizerId).get();
 	}
 
-	public Nozzle saveNozzle(Nozzle nozzle ,int pumpId) {
+	public Nozzle saveNozzle(Nozzle nozzle ,Long pumpId) {
 		Optional<Pump> findById = pumpRepository.findById(pumpId);
 		nozzle.setPump(findById.get());
 		log.info(NOZZLE_SERVICE+" {}" ,findById.get());

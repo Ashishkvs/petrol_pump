@@ -9,7 +9,7 @@ import com.imagegrafia.petrolpump.entity.Nozzle;
 import com.imagegrafia.petrolpump.entity.Pump;
 
 @Repository
-public interface PumpRepository extends CrudRepository<Pump, Integer>{
+public interface PumpRepository extends CrudRepository<Pump, Long>{
 
 
 
