@@ -9,7 +9,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="jquery.validate.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<style>
 		.error{
@@ -63,6 +62,121 @@ $(document).ready(function () {
 });
 </script>
 
+	  
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <label class="btn btn-secondary active">
+    <input type="radio" name="options" id="totalizer"  onchange="fieldEnable()"> Totalizer
+  </label>
+  <label class="btn btn-secondary">
+    <input type="radio" name="options" id="volPerDay" checked onchange="fieldEnable()"> VolPerDay
+  </label>
+</div>
+ <!-- radio button -->
+	<form id="myForm" action="#" th:action="@{/ui/saveRecords}" th:object="${totalizer}" method="post">
+  <div class="form-row">
+    <div class="col" id="volumeDiv">
+      <input type="text" class="form-control" id="volume" placeholder="volume" >
+	  <input type="text" class="form-control" id="amount" placeholder="Amount" >
+    </div>
+	
+	 <div class="col" id="totalizerDiv" hidden>
+	 <label>totalizerStartVolume</label>
+      <input type="text" class="form-control" id="totalizerStartVolume" placeholder="totalizerStartVolume" th:field="*{dayStartVolume}">
+	    <label>totalizerStartAmount</label>
+	   <input type="text" class="form-control" id="totalizerStartAmount" placeholder="totalizerStartAmount"th:field="*{dayStartAmount}" >
+	   <hr>
+	    <label>totalizerEndVolume</label>
+	  <input type="text" class="form-control" id="totalizerEndVolume" placeholder="totalizerEndVolume" th:field="*{dayEndVolume}">
+	  <label>totalizerEndAmount</label>
+	  <input type="text" class="form-control" id="totalizerEndAmount" placeholder="totalizerEndAmount" th:field="*{dayEndAmount}">
+    </div>
+	
+    <div class="col">
+    <label>Date</label>
+      <input type="date" class="form-control" id="date" placeholder="Date" th:field="*{createdDate}" required>
+    </div>
+  </div>
+  <div class="text-center">
+  <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+
+<script>
+$(document).ready(function () {
+//displayChart();
+
+ $('#myForm').submit(function(e) {
+   // e.preventDefault();
+	 let tdate = $('#date').val();
+	 
+	let tvol = $('#volume').val(); 
+	let tamount = $('#amount').val();
+	
+	//totalizer properties
+	let tsv = $ ('#totalizerStartVolume').val();
+	let tsa = $ ('#totalizerStartAmount').val();
+	let tev = $ ('#totalizerEndVolume').val();
+	let tea = $ ('#totalizerEndAmount').val();
+		
+	$(".error").remove();
+	//condition checked must be fater this statement
+	
+	if(tsv == '' || isNaN(tsv) || tsv <= 0){
+		$('#totalizerStartVolume').after('<span class="error"> *Invalid Volume passed</span>');
+	}
+	if(tev == '' || isNaN(tev) || tev <= 0){
+		$('#totalizerEndVolume').after('<span class="error"> *Invalid Volume passed</span>');
+	}
+	
+	if(tsa == '' || isNaN(tsa) || tsa <= 0){
+		$('#totalizerStartAmount').after('<span class="error"> *Invalid Amount passed</span>');
+	}
+	if(tea == '' || isNaN(tea) || tea <= 0){
+		$('#totalizerEndAmount').after('<span class="error"> *Invalid Amount passed</span>');
+	}
+	
+	//bussiness logic
+	//volume
+	if(tsv > tev){
+		$('#totalizerEndVolume').after('<span class="error"> *Totalizer end Volume must be <b> > </b> Totalizer Start Volume</span>');
+	}
+	//amount
+	if(tsa > tea){
+		$('#totalizerEndAmount').after('<span class="error"> *Totalizer end Amount must be <b> > </b> Totalizer Start Amount</span>');
+	}
+	
+	
+	if(tvol == '' || isNaN(tvol) || tvol <= 0){
+		$('#volume').after('<span class="error"> *Invalid Volume passed</span>');
+	}
+	if(tamount == '' || isNaN(tamount) || tamount <= 0){
+		$('#amount').after('<span class="error"> *Invalid Amount passed</span>');
+	}
+	if(tdate == ''){
+		$('#date').after('<span class="error">Invalid data passed</span>');
+	}
+		console.log('Form submitted ' + tvol + ''+tdate);
+	});
+
+	//radio functionality
+	//$('#myForm input').on('change', function() {
+   //alert($('input[name=options]:checked', '#myForm').val()); 
+	//});
+ //$('#myForm').submit();
+ //e.preventDefault(false);
+});
+
+	function fieldEnable(){
+	if (document.getElementById('totalizer').checked) {
+		document.getElementById('totalizerDiv').hidden = false;
+		document.getElementById('volumeDiv').hidden = true;
+	}else{
+		document.getElementById('totalizerDiv').hidden = true;
+		document.getElementById('volumeDiv').hidden = false;
+	}
+	
+	}
+</script>
 
 
     <!-- Optional JavaScript -->

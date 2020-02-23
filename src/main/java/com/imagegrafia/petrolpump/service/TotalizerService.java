@@ -42,7 +42,9 @@ public class TotalizerService {
 		return (List<Totalizer>) totalizerRepository.findByNozzle(nozzle.get());
 	}
 	public Totalizer saveTotalizer(Totalizer totalizer) {
-		
+		int nozzleId = totalizer.getNozzle().getId();
+		Optional<Nozzle> findNozzleById = nozzleRepository.findById(nozzleId);
+		findNozzleById.orElseThrow( () -> new InvalidDataException("Nozzle id :"+nozzleId));
 		validateNewData(totalizer);
 		//if multiple updates are happening for same day then just update exisitng data
 		List<Totalizer> findByCreatedDate = totalizerRepository.findByCreatedDate(totalizer.getCreatedDate());

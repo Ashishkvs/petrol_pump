@@ -55,6 +55,7 @@ public class UiController {
 	private boolean enableMessage;
 
 	private static Pump pump;
+	private static Nozzle nozzle=new Nozzle();
 
 	@GetMapping("/")
 	public String index(Model model) {
@@ -79,6 +80,7 @@ public class UiController {
 			HttpServletResponse response, Model model) {
 //		totalizerService.validateNewData(totalizer);
 //		log.info("Totalizer :: {} ", totalizer);
+		totalizer.setNozzle(nozzle);
 		totalizerService.saveTotalizer(totalizer);
 		return "index";
 	}
@@ -104,6 +106,22 @@ public class UiController {
 		List<GraphData> graphDatas = getGraphData(totalizerLists);
 		model.addAttribute("graphDatas", graphDatas);
 		model.addAttribute("totalizerLists", totalizerLists);
+		
+		//for Totalizer form need nozzle id
+		
+		nozzle.setId(nozzleId);
+		
+//		log.info("nozzle id "+ nozzleId);
+//		Totalizer totalizer = new Totalizer();
+//		totalizer.setTempVar(150);
+//		totalizer.setNozzle(nozzle);
+		
+		model.addAttribute("totalizer", new Totalizer());
+		model.addAttribute("prevDayVolume", "");
+		model.addAttribute("prevDayAmount", "");
+//		totalizerService.getPreviousDayTotalizer();
+//		return "index";
+		
 		return "tableView";
 	}
 
