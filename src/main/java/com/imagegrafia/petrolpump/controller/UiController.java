@@ -95,9 +95,9 @@ public class UiController {
 	}
 
 	// table ui
-	@GetMapping("/table")
-	public String tableUi(Model model) {
-		List<Totalizer> totalizerLists = totalizerService.findAllTotalizer();
+	@GetMapping("/{nozzleId}/table")
+	public String tableUi(@PathVariable("nozzleId") int nozzleId, Model model) {
+		List<Totalizer> totalizerLists = totalizerService.findByNozzle(nozzleId);
 		log.info("totalizerService.findAllTotalizer() Size ::  {}", totalizerLists.size());
 		// sort data based on dates
 		totalizerLists.sort(totalizerService.comparator.reversed());

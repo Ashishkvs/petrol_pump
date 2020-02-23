@@ -3,13 +3,16 @@ package com.imagegrafia.petrolpump.service;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.imagegrafia.petrolpump.entity.Nozzle;
 import com.imagegrafia.petrolpump.entity.Totalizer;
 import com.imagegrafia.petrolpump.exception.InvalidDataException;
+import com.imagegrafia.petrolpump.repository.NozzleRepository;
 import com.imagegrafia.petrolpump.repository.TotalizerRepository;
 
 import javassist.NotFoundException;
@@ -21,6 +24,9 @@ public class TotalizerService {
 	private static final String TOTALIZER_SERVICE = "TotalizerService ->()";
 	@Autowired
 	private TotalizerRepository totalizerRepository;
+	
+	@Autowired
+	private NozzleRepository nozzleRepository;
 
 	public List<Totalizer> findAllTotalizer() {
 		return (List<Totalizer>) totalizerRepository.findAll();
@@ -29,7 +35,12 @@ public class TotalizerService {
 	public Totalizer findByIdTotalizer(int totalizerId) {
 		return totalizerRepository.findById(totalizerId).get();
 	}
-
+	public List<Totalizer> findByNozzle(int nozzleId){
+		Optional<Nozzle> nozzle = nozzleRepository.findById(nozzleId);
+		nozzle.orElseThrow( () -> new InvalidDataException("Nozzle id :"+nozzleId+" doesn't exists"));
+		
+		return (List<Totalizer>) totalizerRepository.findByNozzle(nozzle.get());
+	}
 	public Totalizer saveTotalizer(Totalizer totalizer) {
 		
 		validateNewData(totalizer);

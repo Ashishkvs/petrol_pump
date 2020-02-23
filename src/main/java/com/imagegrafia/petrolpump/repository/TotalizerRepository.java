@@ -6,11 +6,13 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.imagegrafia.petrolpump.entity.Nozzle;
 import com.imagegrafia.petrolpump.entity.Totalizer;
 
 @Repository
 public interface TotalizerRepository extends CrudRepository<Totalizer, Integer>{
 
 	List<Totalizer> findByCreatedDate(Date createdDate);
+	List<Totalizer> findByNozzle(Nozzle nozzle);
 
 }
