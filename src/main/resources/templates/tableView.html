@@ -31,37 +31,6 @@
     <h1 class="display-4">Daily Totalizer updater</h1>
     <p class="lead">Use Below form to track every days selling units</p>
 	
-	<hr>
-<table class="table">
-  <thead class="thead-light">
-    <tr>
-    <th scope="col">Created Date</th>
-      <th scope="col">DayStartVolume</th>
-      <th scope="col">DayEndVolume</th>
-      <th scope="col">DayStartAmount</th>
-      <th scope="col">DayEndAmount</th>
-      
-    </tr>
-  </thead>
-  <tbody th:remove="all-but-first">
-                <tr th:each="totalizer : ${totalizerLists}">
-                	<td th:text="${#dates.format(totalizer.getCreatedDate(), 'dd-MMM-yyyy')}">28-Jun-2013</td>
-                    
-                    <td th:text="${totalizer.getDayStartVolume()}">Day Start volume</td>
-                    <td th:text="${totalizer.getDayStartAmount()}">Day End volume</td>
-                    
-                    <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayStartAmount(), 1, 2)}">$350</td>
-                    <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayEndAmount(), 1, 2)}">$350</td>
-                </tr>
-  </tbody>
-</table>
-
-<script>
-$(document).ready(function () {
-
-});
-</script>
-
 	  
   <div class="btn-group btn-group-toggle" data-toggle="buttons">
   <label class="btn btn-secondary active">
@@ -100,6 +69,39 @@ $(document).ready(function () {
   <button type="submit" class="btn btn-primary">Submit</button>
   </div>
 </form>
+
+<!-- Table View Data -->
+	<hr>
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+    <th scope="col">Created Date</th>
+      <th scope="col">DayStartVolume</th>
+      <th scope="col">DayEndVolume</th>
+      <th scope="col">DayStartAmount</th>
+      <th scope="col">DayEndAmount</th>
+      
+    </tr>
+  </thead>
+  <tbody th:remove="all-but-first">
+                <tr th:each="totalizer : ${totalizerLists}">
+                	<td th:text="${#dates.format(totalizer.getCreatedDate(), 'dd-MMM-yyyy')}">28-Jun-2013</td>
+                    
+                    <td th:text="${totalizer.getDayStartVolume()}">Day Start volume</td>
+                    <td th:text="${totalizer.getDayStartAmount()}">Day End volume</td>
+                    
+                    <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayStartAmount(), 1, 2)}">$350</td>
+                    <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayEndAmount(), 1, 2)}">$350</td>
+                </tr>
+  </tbody>
+</table>
+
+<script>
+$(document).ready(function () {
+
+});
+</script>
+
 
 <script>
 $(document).ready(function () {

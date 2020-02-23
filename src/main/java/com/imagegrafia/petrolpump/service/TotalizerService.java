@@ -60,9 +60,12 @@ public class TotalizerService {
 		return totalizerRepository.save(totalizer);
 	}
 
-	public Totalizer getPreviousDayTotalizer(Date date) {
+	public Totalizer getPreviousDayTotalizer(Nozzle nozzle, Date date) {
 		//temp optimise using query
-		List<Totalizer> findAllTotalizer = findAllTotalizer().stream().filter( data -> data.getCreatedDate().before(date)).collect(Collectors.toList());
+//		List<Totalizer> findAllTotalizer = findAllTotalizer().stream().filter( data -> data.getCreatedDate().before(date)).collect(Collectors.toList());
+		
+		List<Totalizer> findAllTotalizer = totalizerRepository.findByNozzle(nozzle).stream().filter( data -> data.getCreatedDate().before(date)).collect(Collectors.toList());
+		
 		log.info("from service :findAllTotalizer: {} ", findAllTotalizer);
 		if (findAllTotalizer.isEmpty())
 			return null;
@@ -79,7 +82,7 @@ public class TotalizerService {
 					throw new InvalidDataException("date cannot be further than today : "+new Date());
 				}
 		log.info(TOTALIZER_SERVICE + "validateNewData");
-		Totalizer previousDayTotalizer = getPreviousDayTotalizer(currentTotalizer.getCreatedDate());
+		Totalizer previousDayTotalizer = getPreviousDayTotalizer(currentTotalizer.getNozzle(),currentTotalizer.getCreatedDate());
 		if(previousDayTotalizer == null) {
 			//if previous date data not available
 			return;
