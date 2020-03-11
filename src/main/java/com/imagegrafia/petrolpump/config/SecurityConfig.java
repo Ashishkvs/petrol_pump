@@ -30,12 +30,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.authorizeRequests().
-		antMatchers("/resources/**").permitAll()
+		antMatchers("/images/**").permitAll()
+		.antMatchers("/resources/**").permitAll()
 		.antMatchers("/h2-console/**").permitAll()
 		.antMatchers("/reg**").permitAll()
 		.antMatchers("/admin**").hasRole("ADMIN")
 				.anyRequest().authenticated().and().formLogin().loginPage("/login")
-				.successForwardUrl("/dashboard").permitAll().and()
+				.defaultSuccessUrl("/ui/dashboard", true).permitAll().and()
             .logout()                                    
                 .permitAll().and().csrf().disable();
 

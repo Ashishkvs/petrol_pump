@@ -34,6 +34,7 @@ import com.imagegrafia.petrolpump.repository.UserRepository;
 import com.imagegrafia.petrolpump.service.NozzleService;
 import com.imagegrafia.petrolpump.service.PumpService;
 import com.imagegrafia.petrolpump.service.TotalizerService;
+import com.imagegrafia.petrolpump.service.UserAccountService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,6 +62,8 @@ public class UiController {
 
 	@Autowired
 	private NozzleService nozzleService;
+	@Autowired
+	private UserAccountService userAccountService;
 	private boolean enableMessage;
 
 	private static Pump pump;
@@ -142,10 +145,20 @@ public class UiController {
 	@GetMapping("/dashboard")
 	public String dashboard(Model model, Principal principal) {
 		String name = principal.getName();
-		UserAccount userAccount = findUserAccountByPrincipal(principal);
-		Optional<Pump> pumpById = pumpRepository.findById(userAccount.getId());
-		if (pumpById == null) {
-			pump = new Pump();
+		log.info("UserDetails : {}",name);
+		//find id of current logged in User
+		UserAccount userAccount = userAccountService.findUserAccountByPrincipal(principal);
+		
+		//find petrol pump
+		Optional<Pump> pumpById = pumpRepository.findByUserAccount(userAccount);
+		log.info("pumpById :{}",pumpById);
+		//if petrol pump not found create one
+		if (!pumpById.isPresent()) {
+//			pump = new Pump();
+//			pump.setName("My Petrol Pump");
+//			pump.setUserAccount(userAccount);
+//			pumpRepository.save(pump);
+			return "forward:/ui/pump";
 		} else {
 			pump = pumpById.get();
 		}
@@ -153,12 +166,7 @@ public class UiController {
 		return "dashboard";
 	}
 
-	private UserAccount findUserAccountByPrincipal(Principal principal) {
-		// TODO Auto-generated method stub
-		UserAccount findByEmail = userRepository.findByEmail(principal.getName());
-		return findByEmail;
-
-	}
+	
 
 	@PostMapping("/nozzleRecord")
 	public String saveNozzle(@ModelAttribute Nozzle nozzle, Model model) {
@@ -172,7 +180,7 @@ public class UiController {
 			nozzleService.saveNozzle(nozzle, pump);
 		}
 		log.info("AllNozzle:::::: : {}", nozzleService.findAllNozzleByPumpId(1));
-		return "dashboard";
+		return "redirect:/ui/dashboard";
 	}
 
 	private List<GraphData> getGraphData(List<Totalizer> totalizers) {

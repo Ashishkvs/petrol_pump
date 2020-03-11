@@ -1,5 +1,7 @@
 package com.imagegrafia.petrolpump.service;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,10 @@ import com.imagegrafia.petrolpump.entity.UserAccount;
 import com.imagegrafia.petrolpump.repository.RoleRepository;
 import com.imagegrafia.petrolpump.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserAccountService {
 	@Autowired
 	UserRepository userRepository;
@@ -35,6 +40,14 @@ public class UserAccountService {
 		roleRepository.save(role);
 
 		return newUser;
+	}
+	public UserAccount findUserAccountByPrincipal(Principal principal) {
+		// TODO Auto-generated method stub
+		log.info("Principal UserName : {}",principal.getName());
+//		UserAccountService userAccountService=new UserAccountService();
+		UserAccount userAccount = userRepository.findByEmail(principal.getName());
+		return userAccount;
+
 	}
 
 }
