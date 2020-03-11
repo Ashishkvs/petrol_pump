@@ -2,37 +2,27 @@ package com.imagegrafia.petrolpump.entity;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotBlank;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 import lombok.ToString;
 
-@Entity
 @ToString(exclude = "nozzle")
 @Data
-public class Totalizer {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+public class TotalizerDTO {
 	private double dayStartVolume;
 	private double dayStartAmount;
+	
 	private double dayEndVolume;
 	private double dayEndAmount;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createdDate;
 
-	@ManyToOne
 	private Nozzle nozzle;
-	@NotBlank(message="Type cannot be empty or Blank")
-	private String type;
-	
+
+	private String selectedType;
+	private String[] allTypes = new String[] { "anyDay", "today" };
 }

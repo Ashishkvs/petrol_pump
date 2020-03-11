@@ -31,43 +31,49 @@
     <h1 class="display-4">Daily Totalizer updater</h1>
     <p class="lead">Use Below form to track every days selling units</p>
 	
-	  
+<form id="myForm" action="#" th:action="@{/ui/saveRecords}" th:object="${totalizer}" method="post">  
   <div class="btn-group btn-group-toggle" data-toggle="buttons">
   <label class="btn btn-secondary active">
-    <input type="radio" name="options" id="totalizer"  onchange="fieldEnable()"> Totalizer
+    <input type="radio" name="options" th:field="*{type}"  value="anyday" id="totalizer"  onchange="fieldEnable()"> Totalizer
   </label>
   <label class="btn btn-secondary">
-    <input type="radio" name="options" id="volPerDay" checked onchange="fieldEnable()"> VolPerDay
+    <input type="radio" name="options" th:field="*{type}"  value="today" id="volPerDay" checked onchange="fieldEnable()"> VolPerDay
   </label>
 </div>
  <!-- radio button -->
-	<form id="myForm" action="#" th:action="@{/ui/saveRecords}" th:object="${totalizer}" method="post">
+
   <div class="form-row">
-    <div class="col" id="volumeDiv">
-      <input type="text" class="form-control" id="volume" placeholder="volume" >
-	  <input type="text" class="form-control" id="amount" placeholder="Amount" >
+	
+	 <div class="col" id="totalizerDiv" >
+	 <div id="totalizerStartVolume">
+	 <label>Totalizer Start Volume</label>
+      <input type="text" class="form-control"  placeholder="totalizerStartVolume" th:field="*{dayStartVolume}">
+	   </div> 
+	   <div id="totalizerStartAmount">
+	    <label>Totalizer Start Amount</label>
+	   <input type="text" class="form-control"  placeholder="totalizerStartAmount"th:field="*{dayStartAmount}" >
+	   </div>
+	    <div id="totalizerEndVolume">
+	    <label>Totalizer End Volume</label>
+	  <input type="text" class="form-control"  placeholder="totalizerEndVolume" th:field="*{dayEndVolume}">
+	  </div>
+	  <div id="totalizerEndAmount">
+	  <label>Totalizer End Amount</label>
+	  <input type="text" class="form-control"  placeholder="totalizerEndAmount" th:field="*{dayEndAmount}">
+    </div>
     </div>
 	
-	 <div class="col" id="totalizerDiv" hidden>
-	 <label>totalizerStartVolume</label>
-      <input type="text" class="form-control" id="totalizerStartVolume" placeholder="totalizerStartVolume" th:field="*{dayStartVolume}">
-	    <label>totalizerStartAmount</label>
-	   <input type="text" class="form-control" id="totalizerStartAmount" placeholder="totalizerStartAmount"th:field="*{dayStartAmount}" >
-	   <hr>
-	    <label>totalizerEndVolume</label>
-	  <input type="text" class="form-control" id="totalizerEndVolume" placeholder="totalizerEndVolume" th:field="*{dayEndVolume}">
-	  <label>totalizerEndAmount</label>
-	  <input type="text" class="form-control" id="totalizerEndAmount" placeholder="totalizerEndAmount" th:field="*{dayEndAmount}">
-    </div>
-	
-    <div class="col">
-    <label>Date</label>
-      <input type="date" class="form-control" id="date" placeholder="Date" th:field="*{createdDate}" required>
+    <div class="col" >
+	  <div class="mx-1" id="date" >
+	    <label>Date</label>
+	      <input type="date" class="form-control"  placeholder="Date" th:field="*{createdDate}" >
+	   </div>
+	   <div class="mx-5">
+	  		<button type="submit" class="btn btn-primary">Submit</button>
+	  </div>
     </div>
   </div>
-  <div class="text-center">
-  <button type="submit" class="btn btn-primary">Submit</button>
-  </div>
+  
 </form>
 
 <!-- Table View Data -->
@@ -79,7 +85,7 @@
       <th scope="col">DayStartVolume</th>
       <th scope="col">DayEndVolume</th>
       <th scope="col">DayStartAmount</th>
-      <th scope="col">DayEndAmount</th>
+      <th scope="col"> DayEndAmount</th>
       
     </tr>
   </thead>
@@ -88,7 +94,7 @@
                 	<td th:text="${#dates.format(totalizer.getCreatedDate(), 'dd-MMM-yyyy')}">28-Jun-2013</td>
                     
                     <td th:text="${totalizer.getDayStartVolume()}">Day Start volume</td>
-                    <td th:text="${totalizer.getDayStartAmount()}">Day End volume</td>
+                    <td th:text="${totalizer.getDayEndVolume()}">Day End volume</td>
                     
                     <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayStartAmount(), 1, 2)}">$350</td>
                     <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayEndAmount(), 1, 2)}">$350</td>
@@ -170,11 +176,16 @@ $(document).ready(function () {
 
 	function fieldEnable(){
 	if (document.getElementById('totalizer').checked) {
-		document.getElementById('totalizerDiv').hidden = false;
-		document.getElementById('volumeDiv').hidden = true;
+		//document.getElementById('totalizerDiv').hidden = false;
+		//document.getElementById('volumeDiv').hidden = true;
+		document.getElementById('totalizerStartVolume').hidden = false;
+		document.getElementById('totalizerStartAmount').hidden = false;
+		document.getElementById('date').hidden = false;
 	}else{
-		document.getElementById('totalizerDiv').hidden = true;
-		document.getElementById('volumeDiv').hidden = false;
+		//document.getElementById('totalizerDiv').hidden = true;
+		document.getElementById('totalizerStartVolume').hidden = true;
+		document.getElementById('totalizerStartAmount').hidden = true;
+		document.getElementById('date').hidden = true;
 	}
 	
 	}

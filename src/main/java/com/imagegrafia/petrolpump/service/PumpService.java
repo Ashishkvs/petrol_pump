@@ -30,7 +30,7 @@ public class PumpService {
 		return (List<Pump>) pumpRepository.findAll();
 	}
 	
-	public Pump findPumpById(Long pumpId) {
+	public Pump findPumpById(Integer pumpId) {
 		return pumpRepository.findById(pumpId).get();
 	}
 
@@ -39,7 +39,7 @@ public class PumpService {
 		return pumpRepository.save(pump);
 	}
 
-	public Pump updatePump(Long pumpId, Pump pump) {
+	public Pump updatePump(Integer pumpId, Pump pump) {
 		pump.setId(pumpId);
 		return pumpRepository.save(pump);
 	}

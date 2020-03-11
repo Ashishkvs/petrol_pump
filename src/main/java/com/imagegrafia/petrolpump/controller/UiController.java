@@ -1,13 +1,17 @@
 package com.imagegrafia.petrolpump.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -23,8 +27,10 @@ import com.imagegrafia.petrolpump.entity.GraphData;
 import com.imagegrafia.petrolpump.entity.Nozzle;
 import com.imagegrafia.petrolpump.entity.Pump;
 import com.imagegrafia.petrolpump.entity.Totalizer;
+import com.imagegrafia.petrolpump.entity.UserAccount;
 import com.imagegrafia.petrolpump.repository.NozzleRepository;
 import com.imagegrafia.petrolpump.repository.PumpRepository;
+import com.imagegrafia.petrolpump.repository.UserRepository;
 import com.imagegrafia.petrolpump.service.NozzleService;
 import com.imagegrafia.petrolpump.service.PumpService;
 import com.imagegrafia.petrolpump.service.TotalizerService;
@@ -51,23 +57,27 @@ public class UiController {
 	NozzleRepository nozzleRepository;
 
 	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
 	private NozzleService nozzleService;
 	private boolean enableMessage;
 
 	private static Pump pump;
-	private static Nozzle nozzle=new Nozzle();
+	private static Nozzle nozzle = new Nozzle();
 
 	@GetMapping("/")
-	public String index(Model model) {
+	public String index(@AuthenticationPrincipal Principal principal, Model model) {
 		model.addAttribute("totalizer", new Totalizer());
 		model.addAttribute("prevDayVolume", "");
 		model.addAttribute("prevDayAmount", "");
+		model.addAttribute("principal", principal.getName());
 //		totalizerService.getPreviousDayTotalizer();
-		return "index";
+		return "redirect:/ui/dashboard";
 	}
 
 	@GetMapping("/login/{id}")
-	public ModelAndView uiLogin(@PathVariable("id") Long pumpId, ModelMap modelMap) {
+	public ModelAndView uiLogin(@PathVariable("id") Integer pumpId, ModelMap modelMap) {
 		Optional<Pump> pumpById = pumpRepository.findById(pumpId);
 		pump = pumpById.get();
 //		return "dashboard";
@@ -76,7 +86,7 @@ public class UiController {
 	}
 
 	@PostMapping("/saveRecords")
-	public String saveRecord(@ModelAttribute Totalizer totalizer, BindingResult bindingResult,
+	public String saveRecord(@ModelAttribute @Valid Totalizer totalizer, BindingResult bindingResult,
 			HttpServletResponse response, Model model) {
 //		totalizerService.validateNewData(totalizer);
 //		log.info("Totalizer :: {} ", totalizer);
@@ -106,22 +116,22 @@ public class UiController {
 		List<GraphData> graphDatas = getGraphData(totalizerLists);
 		model.addAttribute("graphDatas", graphDatas);
 		model.addAttribute("totalizerLists", totalizerLists);
-		
-		//for Totalizer form need nozzle id
-		
+
+		// for Totalizer form need nozzle id
+
 		nozzle.setId(nozzleId);
-		
+
 //		log.info("nozzle id "+ nozzleId);
 //		Totalizer totalizer = new Totalizer();
 //		totalizer.setTempVar(150);
 //		totalizer.setNozzle(nozzle);
-		
+
 		model.addAttribute("totalizer", new Totalizer());
 		model.addAttribute("prevDayVolume", "");
 		model.addAttribute("prevDayAmount", "");
 //		totalizerService.getPreviousDayTotalizer();
 //		return "index";
-		
+
 		return "tableView";
 	}
 
@@ -130,9 +140,24 @@ public class UiController {
 	PumpService pumpService;
 
 	@GetMapping("/dashboard")
-	public String dashboard(Model model) {
+	public String dashboard(Model model, Principal principal) {
+		String name = principal.getName();
+		UserAccount userAccount = findUserAccountByPrincipal(principal);
+		Optional<Pump> pumpById = pumpRepository.findById(userAccount.getId());
+		if (pumpById == null) {
+			pump = new Pump();
+		} else {
+			pump = pumpById.get();
+		}
 		intializeDashboard(model);
 		return "dashboard";
+	}
+
+	private UserAccount findUserAccountByPrincipal(Principal principal) {
+		// TODO Auto-generated method stub
+		UserAccount findByEmail = userRepository.findByEmail(principal.getName());
+		return findByEmail;
+
 	}
 
 	@PostMapping("/nozzleRecord")
@@ -146,7 +171,7 @@ public class UiController {
 		if (nozzle != null && this.pump != null) {
 			nozzleService.saveNozzle(nozzle, pump);
 		}
-		log.info("AllNozzle:::::: : {}", nozzleService.findAllNozzleByPumpId(1L));
+		log.info("AllNozzle:::::: : {}", nozzleService.findAllNozzleByPumpId(1));
 		return "dashboard";
 	}
 
@@ -175,6 +200,7 @@ public class UiController {
 		model.addAttribute("nozzle", new Nozzle());
 
 		model.addAttribute("enableMessage", enableMessage);
+		model.addAttribute("allTypes", new String[] { "anyDay", "today" });
 	}
 
 }

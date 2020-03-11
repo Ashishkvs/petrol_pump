@@ -1,13 +1,11 @@
-package com.example.demo;
+package com.imagegrafia.petrolpump;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-
 @SpringBootTest
-class DemoApplicationTests {
+class PetrolPumpApplicationTest {
 
 	@Test
 	void contextLoads() {
 	}
-
 }

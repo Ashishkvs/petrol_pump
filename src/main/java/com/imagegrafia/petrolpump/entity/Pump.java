@@ -21,7 +21,7 @@ public class Pump {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 	@NotNull
 	@NotBlank(message = "pump name cannot be null or empty")
 	private String name;
