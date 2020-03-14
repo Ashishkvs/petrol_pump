@@ -1,5 +1,6 @@
 package com.imagegrafia.petrolpump.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.imagegrafia.petrolpump.entity.GraphData;
@@ -83,21 +86,14 @@ public class UiController {
 		return "redirect:/ui/dashboard";
 	}
 
-//	@GetMapping("/login/{id}")
-//	public ModelAndView uiLogin(@PathVariable("id") Integer pumpId, ModelMap modelMap) {
-//		Optional<Pump> pumpById = pumpRepository.findById(pumpId);
-//		pump = pumpById.get();
-////		return "dashboard";
-////		modelMap.addAttribute("pump", pumpById.get());
-//		return new ModelAndView("forward:/ui/dashboard", modelMap);
-//	}
 
 	@PostMapping("/totalizer")
-	public String saveTotalizerRecord(@ModelAttribute TotalizerDTO totalizerDTO, BindingResult bindingResult,
+	public String saveTotalizerRecord(@RequestParam("file") MultipartFile file,@ModelAttribute TotalizerDTO totalizerDTO, BindingResult bindingResult,
 			HttpServletResponse response, Model model, Principal principal) {
-
+//		log.info("file.getContentType() :: {} ", file.getOriginalFilename());
+//		log.info("file.getContentType() :: {} ", file.getContentType());
 		log.info("Totalizer :: {} ", totalizerDTO);
-		totalizerService.saveTotalizer(totalizerDTO);
+		totalizerService.saveTotalizer(totalizerDTO,file);
 		return "redirect:/ui/" + totalizerDTO.getNozzleId() + "/table";
 	}
 

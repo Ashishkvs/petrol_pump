@@ -36,4 +36,6 @@ public class Totalizer {
 	@NotBlank(message="Type cannot be empty or Blank")
 	private String type;
 	
+	private String fileUrl;
+	
 }

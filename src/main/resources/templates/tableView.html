@@ -19,6 +19,18 @@
 		.form-control{
 			margin:5px;
 		}
+		.table-img{
+			height: 50px;
+			width: 200px;
+		}
+		.table-img img{
+			width:100%;
+			height:100%;
+		}
+		.fullImage{
+			max-height: 100%;
+			max-width: 100%;
+		}
 	</style>
   </head>
   <body>
@@ -33,7 +45,7 @@
     <h1 class="display-4">Daily Totalizer updater</h1>
     <p class="lead">Use Below form to track every days selling units</p>
 	
-<form id="myForm" action="#" th:action="@{/ui/totalizer}" th:object="${totalizer}" method="post">  
+<form id="myForm" action="#" th:action="@{/ui/totalizer}" th:object="${totalizer}" method="post" enctype="multipart/form-data">  
 <div class="">
     <input type="radio"  th:field="*{type}"  value="anyday" id="totalizer"  onchange="fieldEnable()" > Totalizer
     <input type="radio"  th:field="*{type}"  value="today" id="volPerDay" onchange="fieldEnable()" > VolPerDay
@@ -54,16 +66,19 @@
 	    <label>Totalizer End Volume</label>
 	  <input type="text" class="form-control"  placeholder="totalizerEndVolume" th:field="*{dayEndVolume}">
 	  </div>
-	  <div id="totalizerEndAmount">
+	 <div id="totalizerEndAmount">
 	  <label>Totalizer End Amount</label>
 	  <input type="text" class="form-control"  placeholder="totalizerEndAmount" th:field="*{dayEndAmount}">
     </div>
+    <label>Attach Photo</label>
+    <input type="file" class="form-control"  name="file" >
     </div>
 	
     <div class="col" >
 	  <div class="mx-1" id="date" >
 	    <label>Date</label>
 	      <input type="date" class="form-control"  placeholder="Date" th:field="*{createdDate}" >
+	      
 	   </div>
 	   <div class="mx-5">
 	  		<button type="submit" class="btn btn-primary">Submit</button>
@@ -72,7 +87,7 @@
   </div>
   
 </form>
-
+<div class="showimagediv"></div>
 <!-- Table View Data -->
 	<hr>
 <table class="table">
@@ -83,6 +98,7 @@
       <th scope="col">DayEndVolume</th>
       <th scope="col">DayStartAmount</th>
       <th scope="col"> DayEndAmount</th>
+      <th scope="col"> Receipt</th>
       
     </tr>
   </thead>
@@ -95,6 +111,9 @@
                     
                     <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayStartAmount(), 1, 2)}">$350</td>
                     <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayEndAmount(), 1, 2)}">$350</td>
+                	<td th:if="${totalizer.fileUrl != null}"><img th:src="@{${'/upload/'+totalizer.fileUrl}}" class="table-img" /></td>
+                	<td th:unless="${totalizer.fileUrl != null}">N/A upload url</td>
+                	
                 </tr>
   </tbody>
 </table>
@@ -110,7 +129,15 @@ $(document).ready(function () {
 
 <script>
 $(document).ready(function () {
-//displayChart();
+	//show receipt images
+	 $('.table-img').on('click', function() {
+	        var img = $('<img />', {
+	                      src     : this.src,
+	                      'class' : 'fullImage'
+	                  });
+
+	        $('.showimagediv').html(img).show();
+	    });
 
  $('#myForm').submit(function(e) {
    // e.preventDefault();

@@ -19,4 +19,5 @@ public class TotalizerDTO {
 	private Date createdDate;
 	private String type;
 	private int nozzleId;
+	private byte uploadFile [];
 }

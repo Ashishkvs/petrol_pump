@@ -1,5 +1,8 @@
 package com.imagegrafia.petrolpump.service;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -10,6 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.imagegrafia.petrolpump.entity.Nozzle;
 import com.imagegrafia.petrolpump.entity.Totalizer;
@@ -48,7 +52,7 @@ public class TotalizerService {
 		return (List<Totalizer>) totalizerRepository.findByNozzle(nozzle.get());
 	}
 
-	public Totalizer saveTotalizer(TotalizerDTO totalizerDTO) {
+	public Totalizer saveTotalizer(TotalizerDTO totalizerDTO, MultipartFile file) {
 		Optional<Nozzle> findNozzleById = nozzleRepository.findById(totalizerDTO.getNozzleId());
 		findNozzleById.orElseThrow(() -> new InvalidDataException("Nozzle id :" + totalizerDTO.getNozzleId()));
 
@@ -71,7 +75,27 @@ public class TotalizerService {
 			Totalizer totalizer2 = totalizerList.get(0);
 			totalizer.setId(totalizer2.getId());
 		}
+		// fileupload
+		totalizer.setFileUrl(storeFile(file));
+
 		return totalizerRepository.save(totalizer);
+	}
+
+	private String storeFile(MultipartFile file) {
+		//TO DO compress file
+		String name = System.currentTimeMillis()
+				+ file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
+		try {
+			byte[] bytes = file.getBytes();
+
+			BufferedOutputStream stream = new BufferedOutputStream(
+					new FileOutputStream(new File("src/main/resources/static/upload/" + name)));
+			stream.write(bytes);
+			stream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return name;
 	}
 
 	private Totalizer convertToTotalizer(TotalizerDTO totalizerDTO) {
