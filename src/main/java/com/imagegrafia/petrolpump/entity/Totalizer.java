@@ -32,6 +32,7 @@ public class Totalizer {
 
 	@ManyToOne
 	private Nozzle nozzle;
+	
 	@NotBlank(message="Type cannot be empty or Blank")
 	private String type;
 	

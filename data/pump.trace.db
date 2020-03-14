@@ -1,0 +1,9 @@
+2020-03-15 00:40:15 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FORM" not found; SQL statement:
+delete form Totalizer where id=10 [42102-200]
+2020-03-15 00:40:26 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FORM" not found; SQL statement:
+delete form Totalizer where id=10 [42102-200]
+2020-03-15 00:40:30 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FORM" not found; SQL statement:
+delete form Totalizer where id=10 [42102-200]

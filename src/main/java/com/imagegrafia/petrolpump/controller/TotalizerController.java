@@ -37,11 +37,11 @@ public class TotalizerController {
 		return new ResponseEntity<>(totalizer, HttpStatus.OK);
 	}
 
-	@PostMapping
-	public ResponseEntity<Totalizer> saveTotalizer(@RequestBody Totalizer totalizer) {
-		Totalizer saveTotalizer = totalizerService.saveTotalizer(totalizer);
-		return new ResponseEntity<Totalizer>(saveTotalizer, HttpStatus.CREATED);
-	}
+//	@PostMapping
+//	public ResponseEntity<Totalizer> saveTotalizer(@RequestBody Totalizer totalizer) {
+//		Totalizer saveTotalizer = totalizerService.saveTotalizer(totalizer);
+//		return new ResponseEntity<Totalizer>(saveTotalizer, HttpStatus.CREATED);
+//	}
 
 	private HttpHeaders getHeaders() {
 		HttpHeaders httpHeaders = new HttpHeaders();

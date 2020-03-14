@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
 	<style>
 		.error{
 		margin-left5px;
@@ -21,6 +22,7 @@
 	</style>
   </head>
   <body>
+  
    <div>
 	   <li><a href="/ui/">Totalizer form</a></li>
 	   <li><a href="/ui/graph">Graph Viewer</a></li>
@@ -31,19 +33,14 @@
     <h1 class="display-4">Daily Totalizer updater</h1>
     <p class="lead">Use Below form to track every days selling units</p>
 	
-<form id="myForm" action="#" th:action="@{/ui/saveRecords}" th:object="${totalizer}" method="post">  
-  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-  <label class="btn btn-secondary active">
-    <input type="radio" name="options" th:field="*{type}"  value="anyday" id="totalizer"  onchange="fieldEnable()"> Totalizer
-  </label>
-  <label class="btn btn-secondary">
-    <input type="radio" name="options" th:field="*{type}"  value="today" id="volPerDay" checked onchange="fieldEnable()"> VolPerDay
-  </label>
+<form id="myForm" action="#" th:action="@{/ui/totalizer}" th:object="${totalizer}" method="post">  
+<div class="">
+    <input type="radio"  th:field="*{type}"  value="anyday" id="totalizer"  onchange="fieldEnable()" > Totalizer
+    <input type="radio"  th:field="*{type}"  value="today" id="volPerDay" onchange="fieldEnable()" > VolPerDay
 </div>
- <!-- radio button -->
-
+ 
   <div class="form-row">
-	
+	 <input type="text" class="form-control" hidden  th:field="*{nozzleId}">
 	 <div class="col" id="totalizerDiv" >
 	 <div id="totalizerStartVolume">
 	 <label>Totalizer Start Volume</label>
@@ -101,9 +98,11 @@
                 </tr>
   </tbody>
 </table>
-
+</div>
 <script>
 $(document).ready(function () {
+		$("#volPerDay").prop("checked", true);
+		fieldEnable();
 
 });
 </script>

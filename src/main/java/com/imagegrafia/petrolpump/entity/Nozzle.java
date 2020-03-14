@@ -32,7 +32,7 @@ public class Nozzle {
 	@NotBlank(message="nozzle type cannot be null or empty")
 	private String type;
 	
-	@NotNull(message="pump cannot be null")
+	
 	@ManyToOne
 	@JoinColumn(name = "PUMP_ID")
 	private Pump pump;

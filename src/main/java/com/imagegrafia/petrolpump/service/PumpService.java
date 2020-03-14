@@ -3,12 +3,14 @@ package com.imagegrafia.petrolpump.service;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.imagegrafia.petrolpump.entity.Pump;
+import com.imagegrafia.petrolpump.entity.UserAccount;
 import com.imagegrafia.petrolpump.entity.Pump;
 import com.imagegrafia.petrolpump.exception.InvalidDataException;
 import com.imagegrafia.petrolpump.repository.NozzleRepository;
@@ -42,6 +44,11 @@ public class PumpService {
 	public Pump updatePump(Integer pumpId, Pump pump) {
 		pump.setId(pumpId);
 		return pumpRepository.save(pump);
+	}
+
+	public Optional<Pump> getPumpByUserAccount(UserAccount userAccount) {
+		// TODO Auto-generated method stub
+		return pumpRepository.findByUserAccount(userAccount);
 	}
 
 }

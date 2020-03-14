@@ -48,7 +48,7 @@ public class PumpController {
 
 	private void intializePetorlPump(Model model) {
 		List<Pump> pumps = (List<Pump>) pumpRepository.findAll();
-		model.addAttribute("pump", pumps.get(0));
+//		model.addAttribute("pump", pumps.get(0));
 		model.addAttribute("pumpForm", new Pump());
 	}
 	

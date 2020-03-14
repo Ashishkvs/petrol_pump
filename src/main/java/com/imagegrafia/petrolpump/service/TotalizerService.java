@@ -1,7 +1,6 @@
 package com.imagegrafia.petrolpump.service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -14,11 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.imagegrafia.petrolpump.entity.Nozzle;
 import com.imagegrafia.petrolpump.entity.Totalizer;
+import com.imagegrafia.petrolpump.entity.TotalizerDTO;
 import com.imagegrafia.petrolpump.exception.InvalidDataException;
 import com.imagegrafia.petrolpump.repository.NozzleRepository;
 import com.imagegrafia.petrolpump.repository.TotalizerRepository;
 
-import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -30,7 +29,7 @@ public class TotalizerService {
 
 	@Autowired
 	private NozzleRepository nozzleRepository;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date tempDate = new Date();
 
@@ -49,18 +48,45 @@ public class TotalizerService {
 		return (List<Totalizer>) totalizerRepository.findByNozzle(nozzle.get());
 	}
 
-	public Totalizer saveTotalizer(Totalizer totalizer) {
-		int nozzleId = totalizer.getNozzle().getId();
-		Optional<Nozzle> findNozzleById = nozzleRepository.findById(nozzleId);
-		findNozzleById.orElseThrow(() -> new InvalidDataException("Nozzle id :" + nozzleId));
-		validateNewData(totalizer);
-		// if multiple updates are happening for same day then just update exisitng data
-		List<Totalizer> findByCreatedDate = totalizerRepository.findByCreatedDate(totalizer.getCreatedDate());
-		if (findByCreatedDate != null && !findByCreatedDate.isEmpty()) {
-			Totalizer totalizer2 = findByCreatedDate.get(0);
+	public Totalizer saveTotalizer(TotalizerDTO totalizerDTO) {
+		Optional<Nozzle> findNozzleById = nozzleRepository.findById(totalizerDTO.getNozzleId());
+		findNozzleById.orElseThrow(() -> new InvalidDataException("Nozzle id :" + totalizerDTO.getNozzleId()));
+
+		Totalizer totalizer = convertToTotalizer(totalizerDTO);
+		if (totalizer.getType().equals("today")) {
+			totalizer.setCreatedDate(getDateWithZeroTime());
+			// check previous day data available
+			Totalizer previousDayTotalizer = getPreviousDayTotalizer(totalizer.getNozzle(), totalizer.getCreatedDate());
+			if (previousDayTotalizer != null) {
+				totalizer.setDayStartAmount(previousDayTotalizer.getDayEndAmount());
+				totalizer.setDayStartVolume(previousDayTotalizer.getDayEndVolume());
+			}
+
+		}
+		validateTotalizerData(totalizer);
+
+		// if multiple updates are happening for same day then just update existing data
+		List<Totalizer> totalizerList = totalizerRepository.findByCreatedDate(totalizer.getCreatedDate());
+		if (!totalizerList.isEmpty()) {
+			Totalizer totalizer2 = totalizerList.get(0);
 			totalizer.setId(totalizer2.getId());
 		}
 		return totalizerRepository.save(totalizer);
+	}
+
+	private Totalizer convertToTotalizer(TotalizerDTO totalizerDTO) {
+		Totalizer totalizer = new Totalizer();
+		totalizer.setCreatedDate(totalizerDTO.getCreatedDate());
+		totalizer.setDayEndAmount(totalizerDTO.getDayEndAmount());
+		totalizer.setDayEndVolume(totalizerDTO.getDayEndVolume());
+		totalizer.setDayStartAmount(totalizerDTO.getDayStartAmount());
+		totalizer.setDayStartVolume(totalizerDTO.getDayStartVolume());
+		totalizer.setType(totalizerDTO.getType());
+		Nozzle nozzle = new Nozzle();
+		nozzle.setId(totalizerDTO.getNozzleId());
+		totalizer.setNozzle(nozzle);
+		return totalizer;
+
 	}
 
 	public Totalizer updateTotalizer(int totalizerId, Totalizer totalizer) {
@@ -70,78 +96,54 @@ public class TotalizerService {
 
 	public Totalizer getPreviousDayTotalizer(Nozzle nozzle, Date date) {
 		// temp optimise using query
+		log.info("Date {} ", date);
 //		List<Totalizer> findAllTotalizer = findAllTotalizer().stream().filter( data -> data.getCreatedDate().before(date)).collect(Collectors.toList());
 
 		List<Totalizer> findAllTotalizer = totalizerRepository.findByNozzle(nozzle);
-		log.info("FindAllTotalizer {} ", findAllTotalizer.size());
-		if(!findAllTotalizer.isEmpty()) {
-			findAllTotalizer.stream()
-			.filter(data -> data.getCreatedDate().before(date)).collect(Collectors.toList());
+		log.info("FindAllTotalizerBYNOZZLE {} ", findAllTotalizer.size());
+
+		if (!findAllTotalizer.isEmpty()) {
+			findAllTotalizer = findAllTotalizer.stream().filter(data -> data.getCreatedDate().before(date))
+					.collect(Collectors.toList());
 		}
 
-		log.info("from service :findAllTotalizer: {} ", findAllTotalizer);
-		if (findAllTotalizer.isEmpty())
+		// after filter again check list is empty ?
+		if (findAllTotalizer.isEmpty()) {
 			return null;
-		else {
-			log.info("from service :: {} ", findAllTotalizer.get(0));
-			findAllTotalizer.sort(comparator.reversed());
-			return findAllTotalizer.get(0);
 		}
+
+		log.info("Filetr totalizer before createdDate: {} ", findAllTotalizer);
+		findAllTotalizer.sort(comparator.reversed());
+		log.info("from service :: {} ", findAllTotalizer.get(0));
+		return findAllTotalizer.get(0);
+
 	}
 
-	public void validateNewData(Totalizer currentTotalizer) {
+	public void validateTotalizerData(Totalizer totalizer) {
+		log.info(TOTALIZER_SERVICE + "validateNewData");
 		// validate date
-		if(currentTotalizer ==null) {
+		if (totalizer == null) {
 			throw new InvalidDataException("Totalizer cannot be null");
 		}
-		//check previous day data
-		Totalizer previousDayTotalizer = getPreviousDayTotalizer(currentTotalizer.getNozzle(),
-				currentTotalizer.getCreatedDate());
-		if(currentTotalizer.getType().equals("today")) {
-//			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-//			String format = sdf.format(new Date());
-//			Date date = new Date();
-			
-			
-			currentTotalizer.setCreatedDate(tempDate);
-			//set totalizer start vol and amount
-			if(previousDayTotalizer == null) {
-				throw new InvalidDataException("No Previous day data available");
-			}
-			currentTotalizer.setDayStartAmount(previousDayTotalizer.getDayEndAmount());
-			currentTotalizer.setDayStartVolume(previousDayTotalizer.getDayEndVolume());
-		}
-		
-		if (currentTotalizer.getCreatedDate().after(new Date())) {
+		if (totalizer.getCreatedDate().after(new Date())) {
 			throw new InvalidDataException("date cannot be further than today : " + new Date());
 		}
-		log.info(TOTALIZER_SERVICE + "validateNewData");
-		
+		// check previous day data
+		Totalizer previousDayTotalizer = getPreviousDayTotalizer(totalizer.getNozzle(), totalizer.getCreatedDate());
+		// if previous date data not available
 		if (previousDayTotalizer == null) {
-			// if previous date data not available
+
 			return;
 		}
-		if (currentTotalizer.getDayEndAmount() < previousDayTotalizer.getDayEndAmount()) {
-			throw new InvalidDataException(
-					"Invalid Data Passed currentTotalizerAmount " + currentTotalizer.getDayEndAmount()
-							+ " is less than previousDayTotalizerAmount " + previousDayTotalizer.getDayEndAmount());
-		}
-		if (currentTotalizer.getDayEndVolume() < previousDayTotalizer.getDayEndVolume()) {
-			throw new InvalidDataException(
-					"Invalid Data Passed currentTotalizerVolume " + currentTotalizer.getDayEndVolume()
-							+ " is less than previousDayTotalizerVolume " + previousDayTotalizer.getDayEndVolume());
-		}
-	}
 
-	Totalizer everyDay() {
-		String type = "everyDay";
-		if (type.equalsIgnoreCase("today")) {
-			// validate with last totalizer
-//			set the todays date
-			// set start vol and amount picking from previous end vol
-
+		if (totalizer.getDayEndAmount() < previousDayTotalizer.getDayEndAmount()) {
+			throw new InvalidDataException("Invalid Data Passed currentTotalizerAmount " + totalizer.getDayEndAmount()
+					+ " is less than previousDayTotalizerAmount " + previousDayTotalizer.getDayEndAmount());
 		}
-		return null;
+		if (totalizer.getDayEndVolume() < previousDayTotalizer.getDayEndVolume()) {
+			throw new InvalidDataException("Invalid Data Passed currentTotalizerVolume " + totalizer.getDayEndVolume()
+					+ " is less than previousDayTotalizerVolume " + previousDayTotalizer.getDayEndVolume());
+		}
 	}
 
 	// Totalizer comparator to sort data by date
@@ -159,4 +161,12 @@ public class TotalizerService {
 
 	};
 
+	private Date getDateWithZeroTime() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
+	}
 }

@@ -1,0 +1,11 @@
+#Bussiness logic
+one user can have only one pump
+one pump can have upto 10 nozzles
+one nozzle have multiple totalizer (as per days in a month 28,29,30,31) 
+
+#totalizer validation
+
+first day start vol start amount end vol end amount
+firstday Totalizer volume and Totalizer amount
+today validate previous day amount and volume
+anyDay no validation

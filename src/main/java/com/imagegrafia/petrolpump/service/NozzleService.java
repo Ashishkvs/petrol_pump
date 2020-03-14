@@ -32,9 +32,7 @@ public class NozzleService {
 		return (List<Nozzle>) nozzleRepository.findAll();
 	}
 
-	public List<Nozzle> findAllNozzleByPumpId(Integer pumpId) {
-		Pump pump = new Pump();
-		pump.setId(pumpId);
+	public List<Nozzle> findAllNozzleByPump(Pump pump) {
 		return (List<Nozzle>) nozzleRepository.findByPump(pump);
 	}
 
