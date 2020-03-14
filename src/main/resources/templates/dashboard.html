@@ -34,14 +34,16 @@
 	  		<p th:text="${message}">Success message</p>
 		</div>
 	</div>
-    <h1 class="display-5" th:text="${pump.name}">Pump Name</h1>
-    <p class="lead" th:text="${pump.address}">Pump Address</p>
-	<div class="col-8">
+   
+	<div class="col-6">
 		<div class="mx-2 mb-2">
-			<span class="display-6 text-uppercase">All Nozzles</span>
-			<button class="btn btn-primary float-right" data-toggle="collapse" data-target="#nozzleForm">+Add Nozzle</button>
+			<button class="btn btn-outline-primary float-right" data-toggle="collapse" data-target="#nozzleForm">+Add Nozzle</button>
 		</div>
 	</div>
+	<div class="mx-4">
+	 <span class="display-4" th:text="${pump.name}">Pump Name</span>
+    <span class="text-muted" th:text="${pump.address}">Pump Address</span>
+    </div>
 	<div class="col-6 mx-2 mt-2">
   
 		<form class="form-inline jumbotron collapse" id="nozzleForm" action="#" th:action="@{/ui/dashboard}" th:object="${nozzle}" method="post">
@@ -64,7 +66,8 @@
 		<div class="mx-2 mt-2">
 		<ul class="list-group" th:each="nozzle : ${nozzles}">
 		  <li class="list-group-item">
-		<a th:href="@{/ui/{id}/table(id=${nozzle.id})}" th:text="${nozzle.name}">Url</a></li>
+		  <span  class="badge badge-pill badge-info" th:classappend="${nozzle.type == 'DIESEL'} ? badge-info : badge-dark" th:text="${nozzle.type}">Oil Type</span> &nbsp;
+		<a th:href="@{/ui/{id}/table(id=${nozzle.id})}" th:text="${nozzle.name}">Nozzle url </a></li>
 		</ul>
 		</div>
 	</div>

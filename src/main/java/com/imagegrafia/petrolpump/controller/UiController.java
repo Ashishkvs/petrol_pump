@@ -70,8 +70,8 @@ public class UiController {
 	@Autowired
 	private UserAccountService userAccountService;
 	private boolean enableMessage;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	
+	@Autowired
+	PumpService pumpService;
 
 	@GetMapping("/")
 	public String index(@AuthenticationPrincipal Principal principal, Model model) {
@@ -95,10 +95,10 @@ public class UiController {
 	@PostMapping("/totalizer")
 	public String saveTotalizerRecord(@ModelAttribute TotalizerDTO totalizerDTO, BindingResult bindingResult,
 			HttpServletResponse response, Model model, Principal principal) {
-		
+
 		log.info("Totalizer :: {} ", totalizerDTO);
 		totalizerService.saveTotalizer(totalizerDTO);
-		return "redirect:/ui/"+totalizerDTO.getNozzleId()+"/table";
+		return "redirect:/ui/" + totalizerDTO.getNozzleId() + "/table";
 	}
 
 	// graph ui
@@ -126,12 +126,12 @@ public class UiController {
 		model.addAttribute("totalizerLists", totalizerLists);
 
 		TotalizerDTO totalizerDTO = new TotalizerDTO();
-		
+
 		Optional<Nozzle> nozzle = nozzleRepository.findById(nozzleId);
 		if (nozzle.isPresent()) {
 			totalizerDTO.setNozzleId(nozzleId);
 			totalizerDTO.setCreatedDate(getDateWithZeroTime());
-			
+
 		} else {
 			throw new InvalidDataException("Nozzle id :" + nozzleId + "Not found");
 		}
@@ -141,13 +141,9 @@ public class UiController {
 		model.addAttribute("prevDayAmount", "");
 //		totalizerService.getPreviousDayTotalizer();
 //		return "index";
-		
+
 		return "tableView";
 	}
-
-	// dashboard
-	@Autowired
-	PumpService pumpService;
 
 	@GetMapping("/dashboard")
 	public String dashboard(Model model, Principal principal) {
@@ -164,9 +160,9 @@ public class UiController {
 		if (!pump.isPresent()) {
 			return "forward:/ui/pump";
 		}
-		
+
 		log.info("pump :{}", pump.get());
-		
+
 		List<Nozzle> nozzles = nozzleRepository.findByPump(pump.get());
 		log.info("Nozzles :{} ", nozzles);
 
@@ -229,11 +225,11 @@ public class UiController {
 	}
 
 	private Date getDateWithZeroTime() {
-		 Calendar calendar = Calendar.getInstance();
-		    calendar.set(Calendar.HOUR_OF_DAY, 0);
-		    calendar.set(Calendar.MINUTE, 0);
-		    calendar.set(Calendar.SECOND, 0);
-		    calendar.set(Calendar.MILLISECOND, 0);
-		    return calendar.getTime();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
 	}
 }
