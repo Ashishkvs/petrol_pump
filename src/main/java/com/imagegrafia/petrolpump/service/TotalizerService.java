@@ -75,8 +75,10 @@ public class TotalizerService {
 			Totalizer totalizer2 = totalizerList.get(0);
 			totalizer.setId(totalizer2.getId());
 		}
-		// fileupload
-		totalizer.setFileUrl(storeFile(file));
+		// fileupload 
+		if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty() ){
+			totalizer.setFileUrl(storeFile(file));
+		}
 
 		return totalizerRepository.save(totalizer);
 	}
