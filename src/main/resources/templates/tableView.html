@@ -73,7 +73,7 @@
 	  <input type="text" class="form-control"  placeholder="totalizerEndAmount" th:field="*{dayEndAmount}">
     </div>
     <label>Attach Photo</label>
-    <input type="file" class="form-control"  name="file" >
+    <input type="file" class="form-control"  name="file" id="fileId" accept="image/*">
     </div>
 	
     <div class="col" >
@@ -125,8 +125,29 @@ $(document).ready(function () {
 		$("#volPerDay").prop("checked", true);
 		fieldEnable();
 		$('#loadingProgress').hide();
+		
+		//file preview
+		$('#fileId').change(function(){
+			filePreview(this);
+		});
 
 });
+</script>
+<script >
+
+function filePreview(imageFile){
+	if(imageFile.files && imageFile.files[0]){
+		var reader =new FileReader();
+		reader.onload = function(e){
+			//if previous selected image are there
+			$('#myForm + img').remove();
+			console.log('URLS ::::'+e.target.result);
+			$('#myForm').after('<img src=" '+e.target.result+' " width="300" height="300" />');
+		};
+		reader.readAsDataURL(imageFile.files[0]);
+	}
+	
+}
 </script>
 
 

@@ -74,9 +74,15 @@ public class TotalizerService {
 		if (!totalizerList.isEmpty()) {
 			Totalizer totalizer2 = totalizerList.get(0);
 			totalizer.setId(totalizer2.getId());
+			// delete existing file during multiple update
+			File fileUrl = new File("src/main/resources/static/upload/" + totalizer2.getFileUrl());
+			if (totalizer2.getFileUrl() != null && fileUrl.exists()) {
+				fileUrl.delete();
+				log.info("Delete file : {}", totalizer2.getFileUrl());
+			}
 		}
-		// fileupload 
-		if(file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty() ){
+		// fileupload
+		if (file.getOriginalFilename() != null && !file.getOriginalFilename().isEmpty()) {
 			totalizer.setFileUrl(storeFile(file));
 		}
 
@@ -84,7 +90,7 @@ public class TotalizerService {
 	}
 
 	private String storeFile(MultipartFile file) {
-		//TO DO compress file
+		// TO DO compress file
 		String name = System.currentTimeMillis()
 				+ file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
 		try {
