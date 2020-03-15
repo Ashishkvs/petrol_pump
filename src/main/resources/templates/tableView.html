@@ -44,7 +44,9 @@
   <div class="container">
     <h1 class="display-4">Daily Totalizer updater</h1>
     <p class="lead">Use Below form to track every days selling units</p>
-	
+	<div id="loadingProgress" >
+		<img th:src="@{/images/loading.gif}"/>
+	</div>	
 <form id="myForm" action="#" th:action="@{/ui/totalizer}" th:object="${totalizer}" method="post" enctype="multipart/form-data">  
 <div class="">
     <input type="radio"  th:field="*{type}"  value="anyday" id="totalizer"  onchange="fieldEnable()" > Totalizer
@@ -122,6 +124,7 @@
 $(document).ready(function () {
 		$("#volPerDay").prop("checked", true);
 		fieldEnable();
+		$('#loadingProgress').hide();
 
 });
 </script>
@@ -136,11 +139,16 @@ $(document).ready(function () {
 	                      'class' : 'fullImage'
 	                  });
 
-	        $('.showimagediv').html(img).show();
+	        $('.showimagediv').html(img).toggle();
 	    });
 
  $('#myForm').submit(function(e) {
-   // e.preventDefault();
+	 //loading progress
+	    $('#loadingProgress').show();
+	 
+    //e.preventDefault();
+  
+   
 	 let tdate = $('#date').val();
 	 
 	let tvol = $('#volume').val(); 
@@ -198,6 +206,7 @@ $(document).ready(function () {
 	//});
  //$('#myForm').submit();
  //e.preventDefault(false);
+ $('#loadingProgress').hide();
 });
 
 	function fieldEnable(){
