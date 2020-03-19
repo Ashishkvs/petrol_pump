@@ -57,7 +57,7 @@ public class TotalizerService {
 		findNozzleById.orElseThrow(() -> new InvalidDataException("Nozzle id :" + totalizerDTO.getNozzleId()));
 
 		Totalizer totalizer = convertToTotalizer(totalizerDTO);
-		if (totalizer.getType().equals("today")) {
+		if (totalizer.getType().equals("TODAY")) {
 			totalizer.setCreatedDate(getDateWithZeroTime());
 			// check previous day data available
 			Totalizer previousDayTotalizer = getPreviousDayTotalizer(totalizer.getNozzle(), totalizer.getCreatedDate());
@@ -113,7 +113,8 @@ public class TotalizerService {
 		totalizer.setDayEndVolume(totalizerDTO.getDayEndVolume());
 		totalizer.setDayStartAmount(totalizerDTO.getDayStartAmount());
 		totalizer.setDayStartVolume(totalizerDTO.getDayStartVolume());
-		totalizer.setType(totalizerDTO.getType());
+		//if advance true
+		totalizer.setType(totalizerDTO.isAdvance() == true ? "EVERYDAY" : "TODAY");
 		Nozzle nozzle = new Nozzle();
 		nozzle.setId(totalizerDTO.getNozzleId());
 		totalizer.setNozzle(nozzle);

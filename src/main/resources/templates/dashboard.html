@@ -35,44 +35,43 @@
 		</div>
 	</div>
    
-	<div class="col-6">
+	<div class="col">
 		<div class="mx-2 mb-2">
 			<button class="btn btn-outline-primary float-right" data-toggle="collapse" data-target="#nozzleForm">+Add Nozzle</button>
 		</div>
-	</div>
-	<div class="mx-4">
-	 <span class="display-4" th:text="${pump.name}">Pump Name</span>
-    <span class="text-muted" th:text="${pump.address}">Pump Address</span>
-    </div>
-	<div class="col-6 mx-2 mt-2">
+	
+		<div class="">
+		 <span class="display-4" th:text="${pump.name}">Pump Name</span>
+	    <span class="text-muted" th:text="${pump.address}">Pump Address</span>
+	    </div>
   
-		<form class="form-inline jumbotron collapse" id="nozzleForm" action="#" th:action="@{/ui/dashboard}" th:object="${nozzle}" method="post">
-			  
-			  <input type="text" class="form-control mb-2 mr-sm-2" id="nozzleName" placeholder="Nozzle Name" required th:field="*{name}">
+		<form class="form jumbotron collapse" id="nozzleForm" action="#" th:action="@{/ui/dashboard}" th:object="${nozzle}" method="post">
+			  <input type="text" class="form-control " id="nozzleName" placeholder="Nozzle Name" required th:field="*{name}">
 			  <label class="sr-only" for="oilType">Oil Type</label>
-			  <div class="input-group mb-2 mr-sm-2">
-			   <select class="custom-select my-1 mr-sm-2" id="oilType" required th:field="*{type}">
+			 
+			   <select class="form-control" id="oilType" required th:field="*{type}">
 			    <option selected value="">Oil Type...</option>
 			    <option value="DIESEL">DIESEL</option>
 			    <option value="PETROL">PETROL</option>
 			  </select>
-			  </div>
-			  <button type="submit" class="btn btn-primary mb-2">Submit</button>
-		
-		</form>		
+			  
+			  <div class="text-center my-1">
+			  <button type="submit" class="btn btn-primary btn-block ml-2">Submit</button>
+			</div>
+		</form>
 	</div>
 		<div class="clearfix"></div>
-	<div class="col-6">
-		<div class="mx-2 mt-2">
+	<div class="col">
+		<!-- <div class="mx-2 mt-2"> -->
 		<ul class="list-group" th:each="nozzle : ${nozzles}">
 		  <li class="list-group-item">
 		  <span  class="badge badge-pill badge-info" th:classappend="${nozzle.type == 'DIESEL'} ? badge-info : badge-dark" th:text="${nozzle.type}">Oil Type</span> &nbsp;
 		<a th:href="@{/ui/{id}/table(id=${nozzle.id})}" th:text="${nozzle.name}">Nozzle url </a></li>
 		</ul>
-		</div>
+		<!-- </div> -->
 	</div>
 	
-
+</div>
 	
 <!--  temporary  temporary-->
 <!-- <form class="needs-validation" novalidate>

@@ -33,6 +33,7 @@ public class Totalizer {
 	@ManyToOne
 	private Nozzle nozzle;
 	
+	//based on advance true and false
 	@NotBlank(message="Type cannot be empty or Blank")
 	private String type;
 	

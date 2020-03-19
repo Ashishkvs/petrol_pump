@@ -1,257 +1,334 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-         <title>Petrol Pump Application</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+<title>Petrol Pump Application</title>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
-	<style>
-		.error{
-		margin-left5px;
-			color:red;
-		}
-		.form-control{
-			margin:5px;
-		}
-		.table-img{
-			height: 50px;
-			width: 200px;
-		}
-		.table-img img{
-			width:100%;
-			height:100%;
-		}
-		.fullImage{
-			max-height: 100%;
-			max-width: 100%;
-		}
-	</style>
-  </head>
-  <body>
-  
-   <div>
-	   <li><a href="/ui/">Totalizer form</a></li>
-	   <li><a href="/ui/graph">Graph Viewer</a></li>
-	   <li><a href="/ui/table">Table Viewer</a></li>
-	   <li><a href="/ui/dashboard">Dashboard</a></li>
-   </div>
-  <div class="container">
-    <h1 class="display-4">Daily Totalizer updater</h1>
-    <p class="lead">Use Below form to track every days selling units</p>
-	<div id="loadingProgress" >
-		<img th:src="@{/images/loading.gif}"/>
-	</div>	
-<form id="myForm" action="#" th:action="@{/ui/totalizer}" th:object="${totalizer}" method="post" enctype="multipart/form-data">  
-<div class="">
-    <input type="radio"  th:field="*{type}"  value="anyday" id="totalizer"  onchange="fieldEnable()" > Totalizer
-    <input type="radio"  th:field="*{type}"  value="today" id="volPerDay" onchange="fieldEnable()" > VolPerDay
-</div>
- 
-  <div class="form-row">
-	 <input type="text" class="form-control" hidden  th:field="*{nozzleId}">
-	 <div class="col" id="totalizerDiv" >
-	 <div id="totalizerStartVolume">
-	 <label>Totalizer Start Volume</label>
-      <input type="text" class="form-control"  placeholder="totalizerStartVolume" th:field="*{dayStartVolume}">
-	   </div> 
-	   <div id="totalizerStartAmount">
-	    <label>Totalizer Start Amount</label>
-	   <input type="text" class="form-control"  placeholder="totalizerStartAmount"th:field="*{dayStartAmount}" >
-	   </div>
-	    <div id="totalizerEndVolume">
-	    <label>Totalizer End Volume</label>
-	  <input type="text" class="form-control"  placeholder="totalizerEndVolume" th:field="*{dayEndVolume}">
-	  </div>
-	 <div id="totalizerEndAmount">
-	  <label>Totalizer End Amount</label>
-	  <input type="text" class="form-control"  placeholder="totalizerEndAmount" th:field="*{dayEndAmount}">
-    </div>
-    <label>Attach Photo</label>
-    <input type="file" class="form-control"  name="file" id="fileId" accept="image/*">
-    </div>
-	
-    <div class="col" >
-	  <div class="mx-1" id="date" >
-	    <label>Date</label>
-	      <input type="date" class="form-control"  placeholder="Date" th:field="*{createdDate}" >
-	      
-	   </div>
-	   <div class="mx-5">
-	  		<button type="submit" class="btn btn-primary">Submit</button>
-	  </div>
-    </div>
-  </div>
-  
-</form>
-<div class="showimagediv"></div>
-<!-- Table View Data -->
-	<hr>
-<table class="table">
-  <thead class="thead-light">
-    <tr>
-    <th scope="col">Created Date</th>
-      <th scope="col">DayStartVolume</th>
-      <th scope="col">DayEndVolume</th>
-      <th scope="col">DayStartAmount</th>
-      <th scope="col"> DayEndAmount</th>
-      <th scope="col"> Receipt</th>
-      
-    </tr>
-  </thead>
-  <tbody th:remove="all-but-first">
-                <tr th:each="totalizer : ${totalizerLists}">
-                	<td th:text="${#dates.format(totalizer.getCreatedDate(), 'dd-MMM-yyyy')}">28-Jun-2013</td>
-                    
-                    <td th:text="${totalizer.getDayStartVolume()}">Day Start volume</td>
-                    <td th:text="${totalizer.getDayEndVolume()}">Day End volume</td>
-                    
-                    <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayStartAmount(), 1, 2)}">$350</td>
-                    <td th:text="${'$' + #numbers.formatDecimal(totalizer.getDayEndAmount(), 1, 2)}">$350</td>
-                	<td th:if="${totalizer.fileUrl != null}"><img th:src="@{${'/upload/'+totalizer.fileUrl}}" class="table-img" /></td>
-                	<td th:unless="${totalizer.fileUrl != null}">N/A upload url</td>
-                	
-                </tr>
-  </tbody>
-</table>
-</div>
-<script>
-$(document).ready(function () {
-		$("#volPerDay").prop("checked", true);
-		fieldEnable();
-		$('#loadingProgress').hide();
-		
-		//file preview
-		$('#fileId').change(function(){
-			filePreview(this);
-		});
-
-});
-</script>
-<script >
-
-function filePreview(imageFile){
-	if(imageFile.files && imageFile.files[0]){
-		var reader =new FileReader();
-		reader.onload = function(e){
-			//if previous selected image are there
-			$('#myForm + img').remove();
-			console.log('URLS ::::'+e.target.result);
-			$('#myForm').after('<img src=" '+e.target.result+' " width="300" height="300" />');
-		};
-		reader.readAsDataURL(imageFile.files[0]);
-	}
-	
+<style>
+.error {margin-left5px;
+	color: red;
 }
-</script>
 
+.form-control {
+	margin: 5px;
+}
 
-<script>
-$(document).ready(function () {
-	//show receipt images
-	 $('.table-img').on('click', function() {
-	        var img = $('<img />', {
-	                      src     : this.src,
-	                      'class' : 'fullImage'
-	                  });
+.table-img {
+	height: 50px;
+	width: 200px;
+}
 
-	        $('.showimagediv').html(img).toggle();
-	    });
+.table-img img {
+	width: 100%;
+	height: 100%;
+}
 
- $('#myForm').submit(function(e) {
-	 //loading progress
-	    $('#loadingProgress').show();
-	 
-    //e.preventDefault();
-  
-   
-	 let tdate = $('#date').val();
-	 
-	let tvol = $('#volume').val(); 
-	let tamount = $('#amount').val();
-	
-	//totalizer properties
-	let tsv = $ ('#totalizerStartVolume').val();
-	let tsa = $ ('#totalizerStartAmount').val();
-	let tev = $ ('#totalizerEndVolume').val();
-	let tea = $ ('#totalizerEndAmount').val();
+.fullImage {
+	max-height: 100%;
+	max-width: 100%;
+}
+</style>
+</head>
+<body>
+
+	<div>
+		<li><a href="/ui/">Totalizer form</a></li>
+		<li><a href="/ui/graph">Graph Viewer</a></li>
+		<li><a href="/ui/table">Table Viewer</a></li>
+		<li><a href="/ui/dashboard">Dashboard</a></li>
+	</div>
+	<div class="bg-info shadow text-center">
+		<h1 class="display-4">Totalizer</h1>
+		<p class="text-white">Fill Below form to track every days selling units</p>
+	</div>
+	<div class="container">
+
+		<div id="loadingProgress">
+			<img th:src="@{/images/loading.gif}" />
+		</div>
+		<form id="myForm" action="#" th:action="@{/ui/totalizer}"
+			th:object="${totalizer}" method="post" enctype="multipart/form-data">
 		
-	$(".error").remove();
-	//condition checked must be fater this statement
-	
-	if(tsv == '' || isNaN(tsv) || tsv <= 0){
-		$('#totalizerStartVolume').after('<span class="error"> *Invalid Volume passed</span>');
-	}
-	if(tev == '' || isNaN(tev) || tev <= 0){
-		$('#totalizerEndVolume').after('<span class="error"> *Invalid Volume passed</span>');
-	}
-	
-	if(tsa == '' || isNaN(tsa) || tsa <= 0){
-		$('#totalizerStartAmount').after('<span class="error"> *Invalid Amount passed</span>');
-	}
-	if(tea == '' || isNaN(tea) || tea <= 0){
-		$('#totalizerEndAmount').after('<span class="error"> *Invalid Amount passed</span>');
-	}
-	
-	//bussiness logic
-	//volume
-	if(tsv > tev){
-		$('#totalizerEndVolume').after('<span class="error"> *Totalizer end Volume must be <b> > </b> Totalizer Start Volume</span>');
-	}
-	//amount
-	if(tsa > tea){
-		$('#totalizerEndAmount').after('<span class="error"> *Totalizer end Amount must be <b> > </b> Totalizer Start Amount</span>');
-	}
-	
-	
-	if(tvol == '' || isNaN(tvol) || tvol <= 0){
-		$('#volume').after('<span class="error"> *Invalid Volume passed</span>');
-	}
-	if(tamount == '' || isNaN(tamount) || tamount <= 0){
-		$('#amount').after('<span class="error"> *Invalid Amount passed</span>');
-	}
-	if(tdate == ''){
-		$('#date').after('<span class="error">Invalid data passed</span>');
-	}
-		console.log('Form submitted ' + tvol + ''+tdate);
-	});
+			<div class="ml-3 custom-control custom-switch d-inline">
+				<input type="checkbox" class="custom-control-input"
+					id="advacneSwitch" onchange="fieldEnable()" th:field="*{advance}"> 
+					<label class="custom-control-label"	for="advacneSwitch">Advance</label>
+					
+			</div>
 
-	//radio functionality
-	//$('#myForm input').on('change', function() {
-   //alert($('input[name=options]:checked', '#myForm').val()); 
-	//});
- //$('#myForm').submit();
- //e.preventDefault(false);
- $('#loadingProgress').hide();
-});
+			<div class="form">
+			
+				<input type="text" class="form-control" hidden
+					th:field="*{nozzleId}">
+				<div class="col" id="totalizerDiv">
+					<div class="">
+					 <input type="file" class="form-control" name="file" id="fileId" accept="image/*" hidden >
+						<div class="text-center " id="uploadImage" onclick="document.getElementById('fileId').click()">
+							<img th:src="@{/images/upload.png}" class="shadow" width="70" height="70">
+						</div>
+					</div>
+					<div class="mt-2" id="date">
+						<label>Date</label> <input type="date" class="form-control"
+							placeholder="Date" th:field="*{createdDate}">
 
-	function fieldEnable(){
-	if (document.getElementById('totalizer').checked) {
-		//document.getElementById('totalizerDiv').hidden = false;
-		//document.getElementById('volumeDiv').hidden = true;
-		document.getElementById('totalizerStartVolume').hidden = false;
-		document.getElementById('totalizerStartAmount').hidden = false;
-		document.getElementById('date').hidden = false;
-	}else{
-		//document.getElementById('totalizerDiv').hidden = true;
-		document.getElementById('totalizerStartVolume').hidden = true;
-		document.getElementById('totalizerStartAmount').hidden = true;
-		document.getElementById('date').hidden = true;
-	}
-	
-	}
-</script>
+					</div>
+					
+					<div class="mt-4" id="totalizerStartVolume">
+						<label>Totalizer Start Volume</label> <input type="text"
+							class="form-control" placeholder="totalizerStartVolume"
+							th:field="*{dayStartVolume}">
+					</div>
+					<div id="totalizerStartAmount">
+						<label>Totalizer Start Amount</label> <input type="text"
+							class="form-control" placeholder="totalizerStartAmount"
+							th:field="*{dayStartAmount}">
+					</div>
+					<div class="mt-4" id="totalizerEndVolume">
+						<label>Totalizer End Volume</label> <input type="text"
+							class="form-control" placeholder="totalizerEndVolume"
+							th:field="*{dayEndVolume}">
+					</div>
+					<div id="totalizerEndAmount">
+						<label>Totalizer End Amount</label> <input type="text"
+							class="form-control" placeholder="totalizerEndAmount"
+							th:field="*{dayEndAmount}">
+					</div>
 
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  </body>
+					
+					
+					<div class="text-center my-4">
+						<button type="submit" class="ml-2 btn btn-primary btn-lg btn-block">Submit</button>
+					</div>
+				</div>
+			</div>
+
+		</form>
+		<div class="showimagediv"></div>
+		<!-- Table View Data -->
+		<hr>
+		<div class="table-responsive">
+		<table class="table">
+			<thead class="thead-light">
+				<tr>
+					<th scope="col">Created Date</th>
+					<th scope="col">DayStartVolume</th>
+					<th scope="col">DayEndVolume</th>
+					<th scope="col">DayStartAmount</th>
+					<th scope="col">DayEndAmount</th>
+					<th scope="col">Receipt</th>
+
+				</tr>
+			</thead>
+			<tbody th:remove="all-but-first">
+				<tr th:each="totalizer : ${totalizerLists}">
+					<td
+						th:text="${#dates.format(totalizer.getCreatedDate(), 'dd-MMM-yyyy')}">28-Jun-2013</td>
+
+					<td th:text="${totalizer.getDayStartVolume()}">Day Start
+						volume</td>
+					<td th:text="${totalizer.getDayEndVolume()}">Day End volume</td>
+
+					<td
+						th:text="${'$' + #numbers.formatDecimal(totalizer.getDayStartAmount(), 1, 2)}">$350</td>
+					<td
+						th:text="${'$' + #numbers.formatDecimal(totalizer.getDayEndAmount(), 1, 2)}">$350</td>
+					<td th:if="${totalizer.fileUrl != null}"><img
+						th:src="@{${'/upload/'+totalizer.fileUrl}}" class="table-img" /></td>
+					<td th:unless="${totalizer.fileUrl != null}">N/A upload url</td>
+
+				</tr>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$("#advacneSwitch").prop("checked", false);
+			fieldEnable();
+			$('#loadingProgress').hide();
+
+			//file preview
+			$('#fileId').change(function() {
+				filePreview(this);
+			});
+
+		});
+	</script>
+	<script>
+		function filePreview(imageFile) {
+			if (imageFile.files && imageFile.files[0]) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					//if previous selected image are there
+					$('#uploadImage + img ').remove();
+					console.log('URLS ::::' + e.target.result);
+					$('#uploadImage > img')
+							.replaceWith(
+									'<img src=" '+e.target.result+' " width="300" height="300" />');
+				};
+				reader.readAsDataURL(imageFile.files[0]);
+			}
+
+		}
+	</script>
+
+
+	<script>
+		$(document)
+				.ready(
+						function() {
+							//show receipt images
+							$('.table-img').on('click', function() {
+								var img = $('<img />', {
+									src : this.src,
+									'class' : 'fullImage'
+								});
+
+								$('.showimagediv').html(img).toggle();
+							});
+
+							$('#myForm')
+									.submit(
+											function(e) {
+												//loading progress
+												$('#loadingProgress').show();
+
+												//e.preventDefault();
+
+												let tdate = $('#date').val();
+
+												let tvol = $('#volume').val();
+												let tamount = $('#amount')
+														.val();
+
+												//totalizer properties
+												let tsv = $(
+														'#totalizerStartVolume')
+														.val();
+												let tsa = $(
+														'#totalizerStartAmount')
+														.val();
+												let tev = $(
+														'#totalizerEndVolume')
+														.val();
+												let tea = $(
+														'#totalizerEndAmount')
+														.val();
+
+												$(".error").remove();
+												//condition checked must be fater this statement
+
+												if (tsv == '' || isNaN(tsv)
+														|| tsv <= 0) {
+													$('#totalizerStartVolume')
+															.after(
+																	'<span class="error"> *Invalid Volume passed</span>');
+												}
+												if (tev == '' || isNaN(tev)
+														|| tev <= 0) {
+													$('#totalizerEndVolume')
+															.after(
+																	'<span class="error"> *Invalid Volume passed</span>');
+												}
+
+												if (tsa == '' || isNaN(tsa)
+														|| tsa <= 0) {
+													$('#totalizerStartAmount')
+															.after(
+																	'<span class="error"> *Invalid Amount passed</span>');
+												}
+												if (tea == '' || isNaN(tea)
+														|| tea <= 0) {
+													$('#totalizerEndAmount')
+															.after(
+																	'<span class="error"> *Invalid Amount passed</span>');
+												}
+
+												//bussiness logic
+												//volume
+												if (tsv > tev) {
+													$('#totalizerEndVolume')
+															.after(
+																	'<span class="error"> *Totalizer end Volume must be <b> > </b> Totalizer Start Volume</span>');
+												}
+												//amount
+												if (tsa > tea) {
+													$('#totalizerEndAmount')
+															.after(
+																	'<span class="error"> *Totalizer end Amount must be <b> > </b> Totalizer Start Amount</span>');
+												}
+
+												if (tvol == '' || isNaN(tvol)
+														|| tvol <= 0) {
+													$('#volume')
+															.after(
+																	'<span class="error"> *Invalid Volume passed</span>');
+												}
+												if (tamount == ''
+														|| isNaN(tamount)
+														|| tamount <= 0) {
+													$('#amount')
+															.after(
+																	'<span class="error"> *Invalid Amount passed</span>');
+												}
+												if (tdate == '') {
+													$('#date')
+															.after(
+																	'<span class="error">Invalid data passed</span>');
+												}
+												console.log('Form submitted '
+														+ tvol + '' + tdate);
+											});
+
+							//radio functionality
+							//$('#myForm input').on('change', function() {
+							//alert($('input[name=options]:checked', '#myForm').val()); 
+							//});
+							//$('#myForm').submit();
+							//e.preventDefault(false);
+							$('#loadingProgress').hide();
+						});
+
+		function fieldEnable() {
+				if($("#advacneSwitch").prop("checked") == true ){
+				document.getElementById('totalizerStartVolume').hidden = false;
+				document.getElementById('totalizerStartAmount').hidden = false;
+				document.getElementById('date').hidden = false;
+			}else{
+				document.getElementById('totalizerStartVolume').hidden = true;
+				document.getElementById('totalizerStartAmount').hidden = true;
+				document.getElementById('date').hidden = true;
+			}
+
+		}
+	</script>
+
+
+	<!-- Optional JavaScript -->
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script> -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+</body>
 </html>

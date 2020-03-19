@@ -17,7 +17,7 @@ public class TotalizerDTO {
 	private double dayEndAmount;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date createdDate;
-	private String type;
+	private boolean advance; 
 	private int nozzleId;
 	private byte uploadFile [];
 }

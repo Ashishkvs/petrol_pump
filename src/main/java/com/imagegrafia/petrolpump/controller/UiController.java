@@ -90,8 +90,6 @@ public class UiController {
 	@PostMapping("/totalizer")
 	public String saveTotalizerRecord(@RequestParam("file") MultipartFile file,@ModelAttribute TotalizerDTO totalizerDTO, BindingResult bindingResult,
 			HttpServletResponse response, Model model, Principal principal) {
-//		log.info("file.getContentType() :: {} ", file.getOriginalFilename());
-//		log.info("file.getContentType() :: {} ", file.getContentType());
 		log.info("Totalizer :: {} ", totalizerDTO);
 		totalizerService.saveTotalizer(totalizerDTO,file);
 		return "redirect:/ui/" + totalizerDTO.getNozzleId() + "/table";
